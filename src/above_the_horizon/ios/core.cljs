@@ -16,20 +16,29 @@
 ;; (defn alert [title]
 ;;       (.alert (.-Alert ReactNative) title))
 
-(def button-style
-  {:background-color "#fff" :padding 12 :border-radius 5})
+(def task-button-style
+  {:button {:background-color "#fff"
+            :border-radius 5
+            :padding 12}
+   :text {:font-size 16}})
 
-(def button-text-style
-  {:font-size 16})
+(def new-task-button-style
+  {:button {:background-color "#eee"
+            :border-radius 100
+            :height 50
+            :width 50}
+   :text {:font-size 50
+          :line-height 50
+          :text-align "center"}})
 
-(defn make-button [display-text action]
-  [touchable-highlight {:style button-style
+(defn make-button [display-text button-style action]
+  [touchable-highlight {:style (button-style :button)
                         :on-press action
                         :key display-text}
-   [text {:style button-text-style} display-text]])
+   [text {:style (button-style :text)} display-text]])
 
 (defn make-task-button [navigate task]
-  (make-button (:name task) #(navigate "NewTask" {:task task})))
+  (make-button (:name task) task-button-style #(navigate "NewTask" {:task task})))
 
 (defn today-view []
   (fn [{:keys [navigation]}]
@@ -37,18 +46,21 @@
           tasks (subscribe [:get-tasks])]
       [view
        (map (partial make-task-button navigate) @tasks)
-       (make-button "New Task" #(navigate "NewTask" {}))])))
+       (make-button "+" new-task-button-style #(navigate "NewTask"))])))
 
-(defn new-task-view [props]
+(defn task-view [props]
   (fn []
     (let* [task (-> props :navigation :state :params :task)
-           task-name (if task (task :name) "New Task")]
+           task-name (if task (task :name) "New Task")
+           set-params (-> props :navigation :setParams)]
       [view {:style {:margin 10}}
+       ;; (make-button "AAA" #(set-params (clj->js {:title "AAA"})))
+       ;; [text {:style {:font-size 15}} props]
        [text {:style {:font-size 20 :text-align "center"}} task-name]])))
 
 (def stack-router
   {:Today {:screen (stack-screen today-view {:title "Today"})}
-   :NewTask {:screen (stack-screen new-task-view {:title "New Task"})}})
+   :NewTask {:screen (stack-screen task-view {:title "Task"})}})
 
 (def stack-nav
   (stack-navigator stack-router))
