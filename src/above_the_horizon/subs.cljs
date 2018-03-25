@@ -2,6 +2,6 @@
   (:require [re-frame.core :refer [reg-sub]]))
 
 (reg-sub
-  :get-greeting
+  :get-tasks
   (fn [db _]
-    (:greeting db)))
+    (:tasks db)))

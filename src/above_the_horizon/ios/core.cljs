@@ -6,35 +6,49 @@
             [above-the-horizon.subs]))
 
 (def ReactNative (js/require "react-native"))
-(def ReactNavigation (js/require "react-navigation"))
-
 (def app-registry (.-AppRegistry ReactNative))
 (def text (r/adapt-react-class (.-Text ReactNative)))
-(def view (r/adapt-react-class (.-View ReactNative)))
-;; (def image (r/adapt-react-class (.-Image ReactNative)))
 (def touchable-highlight (r/adapt-react-class (.-TouchableHighlight ReactNative)))
+(def view (r/adapt-react-class (.-View ReactNative)))
 
-;; (def logo-img (js/require "./images/cljs.png"))
+(def ReactNavigation (js/require "react-navigation"))
 
 ;; (defn alert [title]
 ;;       (.alert (.-Alert ReactNative) title))
 
-(defn basic-view []
-  (fn []
-    [view {:style {:margin 40}}
-     [text {:style {:font-size 30}} "hullo"]]))
+(def button-style
+  {:background-color "#fff" :padding 12 :border-radius 5})
 
-(defn basic-view-two []
+(def button-text-style
+  {:font-size 16})
+
+(defn make-button [display-text action]
+  [touchable-highlight {:style button-style
+                        :on-press action
+                        :key display-text}
+   [text {:style button-text-style} display-text]])
+
+(defn make-task-button [navigate task]
+  (make-button (:name task) #(navigate "NewTask" {:task task})))
+
+(defn today-view []
   (fn [{:keys [navigation]}]
-    (let [{navigate :navigate} navigation]
-      [view {:style {:margin 40}}
-       [touchable-highlight {:style {:background-color "#999" :padding 12 :border-radius 5}
-                             :on-press #(navigate "HomeTwo" {})}
-        [text {:style {:font-size 30}} "hullo"]]])))
+    (let [{navigate :navigate} navigation
+          tasks (subscribe [:get-tasks])]
+      [view
+       (map (partial make-task-button navigate) @tasks)
+       (make-button "New Task" #(navigate "NewTask" {}))])))
+
+(defn new-task-view [props]
+  (fn []
+    (let* [task (-> props :navigation :state :params :task)
+           task-name (if task (task :name) "New Task")]
+      [view {:style {:margin 10}}
+       [text {:style {:font-size 20 :text-align "center"}} task-name]])))
 
 (def stack-router
-  {:Home {:screen (stack-screen basic-view-two {:title "hullo"})}
-   :HomeTwo {:screen (stack-screen basic-view {:title "hullo-two"})}})
+  {:Today {:screen (stack-screen today-view {:title "Today"})}
+   :NewTask {:screen (stack-screen new-task-view {:title "New Task"})}})
 
 (def stack-nav
   (stack-navigator stack-router))
