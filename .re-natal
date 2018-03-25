@@ -1,0 +1,32 @@
+{
+  "name": "AboveTheHorizon",
+  "interface": "reagent6",
+  "envRoots": {
+    "dev": "env/dev",
+    "prod": "env/prod"
+  },
+  "modules": [
+    "react-navigation"
+  ],
+  "imageDirs": [
+    "images"
+  ],
+  "platforms": {
+    "ios": {
+      "host": "localhost",
+      "modules": [
+        "react-native",
+        "react-navigation",
+        "./images/cljs.png"
+      ]
+    },
+    "android": {
+      "host": "localhost",
+      "modules": [
+        "react-native",
+        "./images/cljs.png"
+      ]
+    }
+  },
+  "autoRequire": false
+}
