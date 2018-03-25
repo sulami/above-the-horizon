@@ -21,12 +21,15 @@
    :text {:font-size 16}})
 
 (def new-task-button-style
-  {:button {:background-color "#eee"
+  {:button {:background-color "#fff"
             :border-radius 100
+            :border-color "#ccc"
+            :border-width 1
             :height 50
             :width 50}
-   :text {:font-size 50
-          :line-height 50
+   :text {:color "#ccc"
+          :font-size 40
+          :line-height 44
           :text-align "center"}})
 
 (defn make-button [display-text button-style action]
