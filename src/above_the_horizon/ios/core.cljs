@@ -11,10 +11,8 @@
 (def touchable-highlight (r/adapt-react-class (.-TouchableHighlight ReactNative)))
 (def view (r/adapt-react-class (.-View ReactNative)))
 
-(def ReactNavigation (js/require "react-navigation"))
-
-;; (defn alert [title]
-;;       (.alert (.-Alert ReactNative) title))
+(def ReactNaviagtion (js/require "react-navigation"))
+(def safe-area-view (r/adapt-react-class(.-SafeAreaView ReactNaviagtion)))
 
 (def task-button-style
   {:button {:background-color "#fff"
@@ -44,18 +42,15 @@
   (fn [{:keys [navigation]}]
     (let [{navigate :navigate} navigation
           tasks (subscribe [:get-tasks])]
-      [view
+      [safe-area-view
        (map (partial make-task-button navigate) @tasks)
        (make-button "+" new-task-button-style #(navigate "NewTask"))])))
 
 (defn task-view [props]
   (fn []
     (let* [task (-> props :navigation :state :params :task)
-           task-name (if task (task :name) "New Task")
-           set-params (-> props :navigation :setParams)]
-      [view {:style {:margin 10}}
-       ;; (make-button "AAA" #(set-params (clj->js {:title "AAA"})))
-       ;; [text {:style {:font-size 15}} props]
+           task-name (if task (task :name) "New Task")]
+      [safe-area-view
        [text {:style {:font-size 20 :text-align "center"}} task-name]])))
 
 (def stack-router
@@ -63,7 +58,7 @@
    :NewTask {:screen (stack-screen task-view {:title "Task"})}})
 
 (def stack-nav
-  (stack-navigator stack-router))
+  (stack-navigator stack-router {:headerMode "none"}))
 
 (defn app-root []
   [:> stack-nav {}])
