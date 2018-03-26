@@ -8,11 +8,15 @@
 (def ReactNative (js/require "react-native"))
 (def app-registry (.-AppRegistry ReactNative))
 (def text (r/adapt-react-class (.-Text ReactNative)))
-(def touchable-highlight (r/adapt-react-class (.-TouchableHighlight ReactNative)))
+(def touchable-highlight (r/adapt-react-class (.-TouchableOpacity ReactNative)))
 (def view (r/adapt-react-class (.-View ReactNative)))
 
 (def ReactNaviagtion (js/require "react-navigation"))
-(def safe-area-view (r/adapt-react-class(.-SafeAreaView ReactNaviagtion)))
+(def safe-area-view (r/adapt-react-class (.-SafeAreaView ReactNaviagtion)))
+
+(def view-style
+  {:background-color "#fff"
+   :height "100%"})
 
 (def task-button-style
   {:button {:background-color "#fff"
@@ -41,11 +45,13 @@
 (defn make-task-button [navigate task]
   (make-button (:name task) task-button-style #(navigate "NewTask" {:task task})))
 
-(defn today-view []
-  (fn [{:keys [navigation]}]
-    (let [{navigate :navigate} navigation
+(defn today-view [props]
+  (fn []
+    (let [navigate (-> props :navigation :navigate)
+          get-param (-> props :navigation :getParam)
           tasks (subscribe [:get-tasks])]
-      [safe-area-view
+      [safe-area-view {:style view-style}
+       (make-button "getProp" task-button-style #(alert (str props)))
        (map (partial make-task-button navigate) @tasks)
        (make-button "+" new-task-button-style #(navigate "NewTask"))])))
 
