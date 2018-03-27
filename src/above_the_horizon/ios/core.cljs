@@ -2,6 +2,8 @@
   (:require [reagent.core :as r :refer [atom]]
             [re-frame.core :refer [subscribe dispatch dispatch-sync]]
             [cljs-react-navigation.reagent :refer [stack-navigator stack-screen]]
+            [schema.core :as s :include-macros true]
+            [above-the-horizon.db :refer [Task]]
             [above-the-horizon.events]
             [above-the-horizon.subs]))
 
@@ -44,7 +46,9 @@
                         :key display-text}
    [text {:style (button-style :text)} display-text]])
 
-(defn make-task-button [navigate task]
+(s/defn ^:always-validate make-task-button
+  [navigate
+   task :- Task]
   (make-button (:name task) task-button-style #(navigate "NewTask" {:task task})))
 
 (defn today-view [props]
@@ -65,8 +69,8 @@
        [text {:style {:font-size 20 :text-align "center"}} task-name]])))
 
 (def stack-router
-  {:Today {:screen (stack-screen today-view {:title "Today"})}
-   :NewTask {:screen (stack-screen task-view {:title "Task"})}})
+  {:Today {:screen (stack-screen today-view)}
+   :NewTask {:screen (stack-screen task-view)}})
 
 (def stack-nav
   (stack-navigator stack-router {:headerMode "none"}))
