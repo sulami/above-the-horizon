@@ -29,7 +29,7 @@
    app-db))
 
 (reg-event-db
- :set-greeting
+ :set-tasks
  validate-spec
  (fn [db [_ value]]
-   (assoc db :greeting value)))
+   (assoc db :task value)))

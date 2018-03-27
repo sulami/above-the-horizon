@@ -9,7 +9,7 @@
   "dependencies": {
     "babel-plugin-transform-es2015-block-scoping": "6.15.0",
     "react": "16.2.0",
-    "react-native": "0.53.0",
+    "react-native": "^0.54.2",
     "react-navigation": "^1.5.8"
   },
   "devDependencies": {

@@ -7,29 +7,31 @@
 
 (def ReactNative (js/require "react-native"))
 (def app-registry (.-AppRegistry ReactNative))
+(def scroll-view (r/adapt-react-class (.-ScrollView ReactNative)))
 (def text (r/adapt-react-class (.-Text ReactNative)))
 (def touchable-highlight (r/adapt-react-class (.-TouchableOpacity ReactNative)))
-(def view (r/adapt-react-class (.-View ReactNative)))
 
 (def ReactNaviagtion (js/require "react-navigation"))
 (def safe-area-view (r/adapt-react-class (.-SafeAreaView ReactNaviagtion)))
 
 (def view-style
   {:background-color "#fff"
+   :justify-content "space-between"
    :height "100%"})
 
 (def task-button-style
-  {:button {:background-color "#fff"
-            :border-radius 5
+  {:button {:border-radius 5
             :padding 12}
    :text {:font-size 16}})
 
 (def new-task-button-style
-  {:button {:background-color "#fff"
+  {:button {:align-self "flex-end"
+            :background-color "#fff"
             :border-radius 100
             :border-color "#ccc"
             :border-width 1
             :height 50
+            :margin-right 30
             :width 50}
    :text {:color "#ccc"
           :font-size 40
@@ -51,8 +53,8 @@
           get-param (-> props :navigation :getParam)
           tasks (subscribe [:get-tasks])]
       [safe-area-view {:style view-style}
-       (make-button "getProp" task-button-style #(alert (str props)))
-       (map (partial make-task-button navigate) @tasks)
+       [scroll-view
+        (map (partial make-task-button navigate) @tasks)]
        (make-button "+" new-task-button-style #(navigate "NewTask"))])))
 
 (defn task-view [props]
