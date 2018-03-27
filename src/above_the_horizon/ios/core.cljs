@@ -12,9 +12,14 @@
 (def scroll-view (r/adapt-react-class (.-ScrollView ReactNative)))
 (def text (r/adapt-react-class (.-Text ReactNative)))
 (def touchable-highlight (r/adapt-react-class (.-TouchableOpacity ReactNative)))
+(def view (r/adapt-react-class (.-View ReactNative)))
 
 (def ReactNaviagtion (js/require "react-navigation"))
 (def safe-area-view (r/adapt-react-class (.-SafeAreaView ReactNaviagtion)))
+
+(defn alert [message]
+  "Trigger an alert with `message`"
+  (.alert (.-Alert ReactNative) message))
 
 (def view-style
   {:background-color "#fff"
@@ -44,12 +49,22 @@
   [touchable-highlight {:style (button-style :button)
                         :on-press action
                         :key display-text}
-   [text {:style (button-style :text)} display-text]])
+   [text
+    {:style (button-style :text)}
+    display-text]])
 
 (s/defn ^:always-validate make-task-button
   [navigate
    task :- Task]
-  (make-button (:name task) task-button-style #(navigate "NewTask" {:task task})))
+  [view {:style {:flex-direction "row"} :key (task :name)}
+   (make-button
+    "O"
+    {:button {:margin-left 20 :padding 12} :text {:font-size 16}}
+    #(alert (str "Completed " (task :name))))
+   (make-button
+    (task :name)
+    task-button-style
+    #(navigate "NewTask" {:task task}))])
 
 (defn today-view [props]
   (fn []
@@ -66,7 +81,9 @@
     (let* [task (-> props :navigation :state :params :task)
            task-name (if task (task :name) "New Task")]
       [safe-area-view
-       [text {:style {:font-size 20 :text-align "center"}} task-name]])))
+       [text
+        {:style {:font-size 20 :text-align "center"}}
+        task-name]])))
 
 (def stack-router
   {:Today {:screen (stack-screen today-view)}
@@ -80,4 +97,7 @@
 
 (defn init []
   (dispatch-sync [:initialize-db])
-  (.registerComponent app-registry "AboveTheHorizon" #(r/reactify-component app-root)))
+  (.registerComponent
+   app-registry
+   "AboveTheHorizon"
+   #(r/reactify-component app-root)))
