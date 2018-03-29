@@ -2,6 +2,8 @@
   (:require [clojure.spec.alpha :as sp]
             [schema.core :as s :include-macros true]))
 
+(def realm (js/require "realm"))
+
 ;; spec of app-db
 ;; (sp/def ::tasks )
 (sp/def ::app-db

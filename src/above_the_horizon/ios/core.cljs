@@ -34,8 +34,8 @@
 (def new-task-button-style
   {:button {:align-self "flex-end"
             :background-color "#fff"
-            :border-radius 100
             :border-color "#ccc"
+            :border-radius 100
             :border-width 1
             :height 50
             :margin-right 30
