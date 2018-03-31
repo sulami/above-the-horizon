@@ -1,39 +1,14 @@
 (ns above-the-horizon.db
   (:require [clojure.spec.alpha :as sp]
-            [schema.core :as s :include-macros true]))
-
-(def realm (js/require "realm"))
-
-(defn jsx->clj
-  [x]
-  (if (map? x)
-    x
-    (into {} (for [k (.keys js/Object x)]
-               [(keyword k)
-                (let [v (aget x k)]
-                  (if (instance? realm.List v)
-                    (map jsx->clj (array-seq v))
-                    v))]))))
-
-(defn query
-  [r table]
-  (some->> (.objects r table)
-           array-seq
-           (mapv jsx->clj)))
+            [schema.core :as s :include-macros true]
+            [above-the-horizon.realm :as ar]))
 
 (defn do-stuff []
-  (let* [schema [{:name "Task", :properties {:name "string"}}]
-         r (new realm (clj->js {:schema schema}))
-         old-tasks (.objects r "Task")
-         new-task (clj->js {:name "Fly away"})]
-    (.write r (fn []
-                (.delete r old-tasks)
-                (.create r "Task" (clj->js {:name "something esle"}))
-                (.create r "Task" new-task)))
-    (let [got-task (query r "Task")]
-      (prn got-task)
-      (.close r)
-      got-task)))
+  (ar/action (fn [r]
+               (.write r (fn []
+                           (->> (.objects r "Task")
+                                (.delete r))))
+               (ar/query r "Task"))))
 
 ;; spec of app-db
 ;; (sp/def ::tasks )
