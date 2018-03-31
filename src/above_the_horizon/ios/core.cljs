@@ -5,6 +5,7 @@
             [schema.core :as s :include-macros true]
             [above-the-horizon.db :refer [Task]]
             [above-the-horizon.events]
+            [above-the-horizon.style :as style]
             [above-the-horizon.subs]))
 
 (def ReactNative (js/require "react-native"))
@@ -20,30 +21,6 @@
 (defn alert [message]
   "Trigger an alert with `message`"
   (.alert (.-Alert ReactNative) message))
-
-(def view-style
-  {:background-color "#fff"
-   :justify-content "space-between"
-   :height "100%"})
-
-(def task-button-style
-  {:button {:border-radius 5
-            :padding 12}
-   :text {:font-size 16}})
-
-(def new-task-button-style
-  {:button {:align-self "flex-end"
-            :background-color "#fff"
-            :border-color "#ccc"
-            :border-radius 100
-            :border-width 1
-            :height 50
-            :margin-right 30
-            :width 50}
-   :text {:color "#ccc"
-          :font-size 40
-          :line-height 44
-          :text-align "center"}})
 
 (defn make-button [display-text button-style action]
   [touchable-highlight {:style (button-style :button)
@@ -63,7 +40,7 @@
     #(alert (str "Completed " (task :name))))
    (make-button
     (task :name)
-    task-button-style
+    style/task-button-style
     #(navigate "NewTask" {:task task}))])
 
 (defn today-view [props]
@@ -71,10 +48,10 @@
     (let [navigate (-> props :navigation :navigate)
           get-param (-> props :navigation :getParam)
           tasks (subscribe [:get-tasks])]
-      [safe-area-view {:style view-style}
+      [safe-area-view {:style style/view-style}
        [scroll-view
         (map (partial make-task-button navigate) @tasks)]
-       (make-button "+" new-task-button-style #(navigate "NewTask"))])))
+       (make-button "+" style/new-task-button-style #(navigate "NewTask"))])))
 
 (defn task-view [props]
   (fn []
