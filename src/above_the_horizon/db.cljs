@@ -18,9 +18,9 @@
 ;; Task schema
 (def Task
   "A schema for tasks"
-  {:name s/Str})
+  {:id s/Int
+   :name s/Str})
 
 ;; initial state of app-db
 (def app-db
-  {:tasks [{:name "Bring out the trash"}
-           {:name "Empty the dishwasher"}]})
+  {:tasks (ar/with-action ar/query "Task")})
