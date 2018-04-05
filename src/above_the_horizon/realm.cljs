@@ -1,7 +1,12 @@
 (ns above-the-horizon.realm
-  (:require [above-the-horizon.schema :as s]))
+  (:require [above-the-horizon.schema :as s]
+            [cljs-uuid.core :as uuid]))
 
 (def realm (js/require "realm"))
+
+;;
+;; Utils
+;;
 
 (defn jsx->clj
   "Convert JSX data to Clojure data."
@@ -14,6 +19,10 @@
                   (if (instance? realm.List v)
                     (map jsx->clj (array-seq v))
                     v))]))))
+
+;;
+;; Abstract
+;;
 
 (defn action
   "Decorator to run a function in a Realm context, closing the DB afterwards."
@@ -45,3 +54,27 @@
   [r table]
   (.write r #(->> (.objects r table)
                   (.delete r))))
+
+;;
+;; Specific
+;;
+
+(defn create-task
+  "Save a task to Realm."
+  [name]
+  (let [uid (str (uuid/make-random))]
+    (with-action insert "Task" {:uid uid :name name})))
+
+(defn delete-task
+  "Delete a task from Realm."
+  [uid]
+  (prn (str "Deleting Task " uid))
+  (action
+   (fn [r]
+     (.write
+      r
+      (fn []
+        (->> (-> (.objects r "Task"
+                           )
+                 (.filtered  (str "uid = \"" uid "\"")))
+             (.delete r)))))))

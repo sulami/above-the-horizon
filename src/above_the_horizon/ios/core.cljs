@@ -5,6 +5,7 @@
             [schema.core :as s :include-macros true]
             [above-the-horizon.db :refer [Task]]
             [above-the-horizon.events]
+            [above-the-horizon.realm :as realm]
             [above-the-horizon.style :as style]
             [above-the-horizon.subs]))
 
@@ -34,11 +35,11 @@
 (s/defn ^:always-validate make-task-button
   [navigate
    task :- Task]
-  [view {:style {:flex-direction "row"} :key (task :name)}
+  [view {:style {:flex-direction "row"} :key (task :uid)}
    (make-button
     "O"
     {:button {:margin-left 20 :padding 12} :text {:font-size 16}}
-    #(alert (str "Completed " (task :name))))
+    #(realm/delete-task (task :uid)))
    (make-button
     (task :name)
     style/task-button-style
@@ -72,7 +73,11 @@
         task-name]
        [view {:style style/action-bar-style}
         (make-button "Cancel" style/cancel-button-style #(go-back))
-        (make-button "Save" style/save-button-style (fn []))]])))
+        (make-button "Save" style/save-button-style (fn []
+                                                      (prn "Saving")
+                                                      (realm/create-task task-name)
+                                                      (prn "Saved")
+                                                      (go-back)))]])))
 
 (def stack-router
   {:Today {:screen (stack-screen today-view)}
