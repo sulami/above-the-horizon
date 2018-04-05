@@ -12,6 +12,7 @@
 (def app-registry (.-AppRegistry ReactNative))
 (def scroll-view (r/adapt-react-class (.-ScrollView ReactNative)))
 (def text (r/adapt-react-class (.-Text ReactNative)))
+(def text-input (r/adapt-react-class (.-TextInput ReactNative)))
 (def touchable-highlight (r/adapt-react-class (.-TouchableOpacity ReactNative)))
 (def view (r/adapt-react-class (.-View ReactNative)))
 
@@ -56,10 +57,14 @@
 (defn task-view [props]
   (fn []
     (let* [task (-> props :navigation :state :params :task)
-           task-name (if task (task :name) "New Task")]
-      [safe-area-view
-       [text
-        {:style {:font-size 20 :text-align "center"}}
+           is-new-task (nil? task)
+           task-name (if is-new-task "" (task :name))]
+      [safe-area-view {:style style/view-style}
+       [text-input
+        {:style style/textbox-style
+         :placeholder "Task Name"
+         :returnKeyType "done"
+         :autoFocus is-new-task}
         task-name]])))
 
 (def stack-router

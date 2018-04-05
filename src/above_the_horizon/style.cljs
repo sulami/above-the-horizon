@@ -23,3 +23,11 @@
           :font-size 40
           :line-height 44
           :text-align "center"}})
+
+(def textbox-style
+  {:background-color "#fff"
+   :border-color "#ccc"
+   :border-radius 10
+   :border-width 1
+   :margin 20
+   :padding 12})
