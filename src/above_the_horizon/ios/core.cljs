@@ -52,7 +52,8 @@
       [safe-area-view {:style style/view-style}
        [scroll-view
         (map (partial make-task-button navigate) @tasks)]
-       (make-button "+" style/new-task-button-style #(navigate "NewTask"))])))
+       [view {:style style/action-bar-style}
+        (make-button "+" style/new-task-button-style #(navigate "NewTask"))]])))
 
 (defn task-view [props]
   (fn []
@@ -67,7 +68,10 @@
          :returnKeyType "done"
          :enablesReturnKeyAutomatically true
          :autoFocus is-new-task}
-        task-name]])))
+        task-name]
+       [view {:style style/action-bar-style}
+        (make-button "Cancel" style/cancel-button-style (fn []))
+        (make-button "Save" style/save-button-style (fn []))]])))
 
 (def stack-router
   {:Today {:screen (stack-screen today-view)}
