@@ -57,7 +57,8 @@
 
 (defn task-view [props]
   (fn []
-    (let* [task (-> props :navigation :state :params :task)
+    (let* [go-back (-> props :navigation :goBack)
+           task (-> props :navigation :state :params :task)
            is-new-task (nil? task)
            task-name (if is-new-task "" (task :name))]
       [safe-area-view {:style style/view-style}
@@ -70,7 +71,7 @@
          :autoFocus is-new-task}
         task-name]
        [view {:style style/action-bar-style}
-        (make-button "Cancel" style/cancel-button-style (fn []))
+        (make-button "Cancel" style/cancel-button-style #(go-back))
         (make-button "Save" style/save-button-style (fn []))]])))
 
 (def stack-router
