@@ -47,8 +47,8 @@
 (defn extend-button-style
   "Extends a button style"
   [base extras]
-  {:button (into (base :button) (extras :button))
-   :text (into (base :text) (extras :text))})
+  {:button (into (:button base) (:button extras))
+   :text (into (:text base) (:text extras))})
 
 (def action-button-style
   {:button {:padding 20}
