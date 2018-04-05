@@ -2,10 +2,10 @@
 
 (def task-schema
   {:name "Task"
-   :primaryKey "id"
-   :properties {:id "int"
+   :primaryKey "uid"
+   :properties {:uid "string"
                 :name "string"}})
 
 (def complete-schema
   (clj->js {:schema [task-schema]
-            :schemaVersion 1}))
+            :schemaVersion 2}))

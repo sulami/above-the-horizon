@@ -11,7 +11,7 @@
 ;; Task schema
 (def Task
   "A schema for tasks"
-  {:id s/Int
+  {:uid s/Str
    :name s/Str})
 
 ;; initial state of app-db

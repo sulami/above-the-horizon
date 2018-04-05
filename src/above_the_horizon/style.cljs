@@ -45,7 +45,7 @@
    :padding 12})
 
 (defn extend-button-style
-  "Extends a button style"
+  "Extends a button style."
   [base extras]
   {:button (into (:button base) (:button extras))
    :text (into (:text base) (:text extras))})
