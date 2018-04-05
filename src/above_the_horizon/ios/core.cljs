@@ -62,8 +62,10 @@
       [safe-area-view {:style style/view-style}
        [text-input
         {:style style/textbox-style
+         :maxLength 255
          :placeholder "Task Name"
          :returnKeyType "done"
+         :enablesReturnKeyAutomatically true
          :autoFocus is-new-task}
         task-name]])))
 
