@@ -74,7 +74,6 @@
      (.write
       r
       (fn []
-        (->> (-> (.objects r "Task"
-                           )
+        (->> (-> (.objects r "Task")
                  (.filtered  (str "uid = \"" uid "\"")))
              (.delete r)))))))
