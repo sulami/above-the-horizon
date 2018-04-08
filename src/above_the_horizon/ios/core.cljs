@@ -25,23 +25,23 @@
   (.alert (.-Alert ReactNative) message))
 
 (defn make-button [display-text button-style action]
-  [touchable-highlight {:style (button-style :button)
+  [touchable-highlight {:style (:button button-style)
                         :on-press action
                         :key display-text}
    [text
-    {:style (button-style :text)}
+    {:style (:text button-style)}
     display-text]])
 
 (s/defn ^:always-validate make-task-button
   [navigate
    task :- Task]
-  [view {:style {:flex-direction "row"} :key (task :uid)}
+  [view {:style {:flex-direction "row"} :key (:uid task)}
    (make-button
     "O"
     {:button {:margin-left 20 :padding 12} :text {:font-size 16}}
-    #(realm/delete-task (task :uid)))
+    #(realm/delete-task (:uid task)))
    (make-button
-    (task :name)
+    (:name task)
     style/task-button-style
     #(navigate "NewTask" {:task task}))])
 
@@ -61,7 +61,7 @@
     (let* [go-back (-> props :navigation :goBack)
            task (-> props :navigation :state :params :task)
            is-new-task (nil? task)
-           task-name (if is-new-task "" (task :name))]
+           task-name (if is-new-task "" (:name task))]
       [safe-area-view {:style style/view-style}
        [text-input
         {:style style/textbox-style
