@@ -61,7 +61,9 @@
     (let* [go-back (-> props :navigation :goBack)
            task (-> props :navigation :state :params :task)
            is-new-task (nil? task)
-           task-name (if is-new-task "" (:name task))]
+           task-uid (if is-new-task nil (:uid task))
+           task-name (if is-new-task "" (:name task))
+           name-value (r/atom task-name)]
       [safe-area-view {:style style/view-style}
        [text-input
         {:style style/textbox-style
@@ -69,12 +71,13 @@
          :placeholder "Task Name"
          :returnKeyType "done"
          :enablesReturnKeyAutomatically true
-         :autoFocus is-new-task}
+         :autoFocus is-new-task
+         :on-change-text #(reset! name-value %)}
         task-name]
        [view {:style style/action-bar-style}
         (make-button "Cancel" style/cancel-button-style #(go-back))
         (make-button "Save" style/save-button-style (fn []
-                                                      (dispatch [:save-task {:uid task}])
+                                                      (dispatch [:save-task {:uid task-uid :name @name-value}])
                                                       (go-back)))]])))
 
 (def stack-router
