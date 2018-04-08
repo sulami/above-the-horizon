@@ -33,7 +33,7 @@
  :save-task
  validate-spec
  (fn [db [_ task]]
-   (realm/create-task (:name task))
+   (realm/save-task task)
    (->> (realm/with-action realm/query "Task")
         (assoc db :tasks))))
 
