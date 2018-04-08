@@ -2,7 +2,8 @@
   (:require
    [re-frame.core :refer [reg-event-db after]]
    [clojure.spec.alpha :as s]
-   [above-the-horizon.db :as db :refer [app-db]]))
+   [above-the-horizon.db :as db :refer [app-db]]
+   [above-the-horizon.realm :as realm]))
 
 ;; -- Interceptors ------------------------------------------------------------
 ;;
@@ -33,3 +34,11 @@
  validate-spec
  (fn [db [_ value]]
    (assoc db :task value)))
+
+(reg-event-db
+ :complete-task
+ validate-spec
+ (fn [db [_ uid]]
+   (realm/delete-task uid)
+   (let [new-tasks (remove #(= uid (:uid %)) (:tasks db))]
+     (assoc new-db :tasks new-tasks))))

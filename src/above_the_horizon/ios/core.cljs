@@ -39,7 +39,7 @@
    (make-button
     "O"
     {:button {:margin-left 20 :padding 12} :text {:font-size 16}}
-    #(realm/delete-task (:uid task)))
+    #(dispatch [:complete-task (:uid task)]))
    (make-button
     (:name task)
     style/task-button-style
