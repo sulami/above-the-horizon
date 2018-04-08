@@ -47,7 +47,7 @@
 (defn insert
   "Insert a row into a table."
   [r table data]
-  (.write r #(.create r table (clj->js data))))
+  (.write r #(.create r table (clj->js data) true)))
 
 (defn flush
   "Empty a table."
@@ -59,11 +59,11 @@
 ;; Specific
 ;;
 
-(defn create-task
-  "Save a task to Realm."
-  [name]
-  (let [uid (str (uuid/make-random))]
-    (with-action insert "Task" {:uid uid :name name})))
+(defn save-task
+  "Save an existing task or create a new one."
+  [task]
+  (->> (assoc task :uid (or (:uid task) (str (uuid/make-random))))
+       (with-action insert "Task")))
 
 (defn delete-task
   "Delete a task from Realm."
