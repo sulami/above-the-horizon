@@ -30,10 +30,12 @@
    app-db))
 
 (reg-event-db
- :set-tasks
+ :save-task
  validate-spec
- (fn [db [_ value]]
-   (assoc db :task value)))
+ (fn [db [_ task]]
+   (realm/create-task "")
+   (->> (realm/with-action realm/query "Task")
+        (assoc db :tasks))))
 
 (reg-event-db
  :complete-task
@@ -41,4 +43,4 @@
  (fn [db [_ uid]]
    (realm/delete-task uid)
    (let [new-tasks (remove #(= uid (:uid %)) (:tasks db))]
-     (assoc new-db :tasks new-tasks))))
+     (assoc db :tasks new-tasks))))

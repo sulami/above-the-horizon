@@ -74,7 +74,7 @@
        [view {:style style/action-bar-style}
         (make-button "Cancel" style/cancel-button-style #(go-back))
         (make-button "Save" style/save-button-style (fn []
-                                                      (realm/create-task task-name)
+                                                      (dispatch [:save-task {:uid task}])
                                                       (go-back)))]])))
 
 (def stack-router
