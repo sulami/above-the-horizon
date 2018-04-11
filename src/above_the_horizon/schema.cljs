@@ -20,9 +20,10 @@
       [(s/optional-key k) (s/maybe schema-data-type)])))
 
 (defn realm->schema
-  [props]
+  [realm-schema]
   "Convert Realm properties to a schema schema."
-  (->> props
+  (->> realm-schema
+       :properties
        (map convert-type)
        (into {})))
 
@@ -38,4 +39,4 @@
             :schemaVersion 4}))
 
 (def Task
-  (realm->schema (:properties task-schema)))
+  (realm->schema task-schema))
