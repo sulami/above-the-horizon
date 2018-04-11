@@ -1,18 +1,11 @@
 (ns above-the-horizon.db
-  (:require [clojure.spec.alpha :as sp]
-            [schema.core :as s :include-macros true]
+  (:require [clojure.spec.alpha :as s]
             [above-the-horizon.realm :as ar]))
 
 ;; spec of app-db
-;; (sp/def ::tasks )
-(sp/def ::app-db
-  (sp/keys :req-un [::tasks]))
-
-;; Task schema
-(def Task
-  "A schema for tasks"
-  {:uid s/Str
-   :name s/Str})
+;; (s/def ::tasks )
+(s/def ::app-db
+  (s/keys :req-un [::tasks]))
 
 ;; initial state of app-db
 (def app-db

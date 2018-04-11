@@ -3,9 +3,9 @@
             [re-frame.core :refer [subscribe dispatch dispatch-sync]]
             [cljs-react-navigation.reagent :refer [stack-navigator stack-screen]]
             [schema.core :as s :include-macros true]
-            [above-the-horizon.db :refer [Task]]
             [above-the-horizon.events]
             [above-the-horizon.realm :as realm]
+            [above-the-horizon.schema :refer [Task]]
             [above-the-horizon.style :as style]
             [above-the-horizon.subs]))
 
