@@ -1,5 +1,10 @@
 (ns above-the-horizon.schema
-  (:require [schema.core :as s :include-macros true]))
+  (:require [schema.core :as s :include-macros true]
+            [cljs-time.core :as time]))
+
+(def schema-mapping
+  "Mapping of realm types to scheam types"
+  {"string" s/Str})
 
 (defn realm->schema
   [props]
