@@ -1,28 +1,41 @@
 (ns above-the-horizon.schema
   (:require [schema.core :as s :include-macros true]
+            [goog.date :refer [UtcDateTime]]
             [cljs-time.core :as time]))
 
 (def schema-mapping
-  "Mapping of realm types to scheam types"
-  {"string" s/Str})
+  "Mapping of realm types to scheam types."
+  {"date" UtcDateTime
+   "string" s/Str})
+
+(defn convert-type
+  [[k v]]
+  "Convert a Realm type to a schema type. Deals with Realm's potential
+  additional parameters."
+  (let* [realm-data-type (if (map? v) (:type v) v)
+         schema-data-type (get schema-mapping realm-data-type)
+         is-required (-> v :optional nil?)]
+    (if is-required
+      [k schema-data-type]
+      [(s/optional-key k) (s/maybe schema-data-type)])))
 
 (defn realm->schema
   [props]
-  "Convert Realm properties to a schema schema"
-  (let [convert-type (fn [[k v]] [k s/Str])]
-    (->> props
-         (map convert-type)
-         (into {}))))
+  "Convert Realm properties to a schema schema."
+  (->> props
+       (map convert-type)
+       (into {})))
 
 (def task-schema
   {:name "Task"
    :primaryKey "uid"
    :properties {:uid "string"
-                :name "string"}})
-
-(def Task
-  (realm->schema (:properties task-schema)))
+                :name "string"
+                :due-date {:type "date" :optional true}}})
 
 (def complete-schema
   (clj->js {:schema [task-schema]
-            :schemaVersion 2}))
+            :schemaVersion 4}))
+
+(def Task
+  (realm->schema (:properties task-schema)))
