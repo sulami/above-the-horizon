@@ -1,37 +1,32 @@
 (ns above-the-horizon.events
   (:require
    [re-frame.core :refer [reg-event-db after]]
-   [clojure.spec.alpha :as s]
+   [schema.core :as s :include-macros true]
    [above-the-horizon.db :as db :refer [app-db]]
-   [above-the-horizon.realm :as realm]))
+   [above-the-horizon.realm :as realm]
+   [above-the-horizon.schema :as schema :refer [app-db-schema]]))
 
 ;; -- Interceptors ------------------------------------------------------------
 ;;
 ;; See https://github.com/Day8/re-frame/blob/master/docs/Interceptors.md
 ;;
-(defn check-and-throw
-  "Throw an exception if db doesn't have a valid spec."
-  [spec db [event]]
-  (when-not (s/valid? spec db)
-    (let [explain-data (s/explain-data spec db)]
-      (throw (ex-info (str "Spec check after " event " failed: " explain-data) explain-data)))))
-
-(def validate-spec
+(def validate-schema
+  "Throw an exception if db doesn't conform to its schema."
   (if goog.DEBUG
-    (after (partial check-and-throw ::db/app-db))
+    (after (partial s/validate schema/app-db-schema))
     []))
 
 ;; -- Handlers --------------------------------------------------------------
 
 (reg-event-db
  :initialize-db
- validate-spec
+ validate-schema
  (fn [_ _]
    app-db))
 
 (reg-event-db
  :save-task
- validate-spec
+ validate-schema
  (fn [db [_ task]]
    (realm/save-task task)
    (->> (realm/with-action realm/query "Task")
@@ -39,7 +34,7 @@
 
 (reg-event-db
  :complete-task
- validate-spec
+ validate-schema
  (fn [db [_ uid]]
    (realm/delete-task uid)
    (let [new-tasks (remove #(= uid (:uid %)) (:tasks db))]

@@ -40,3 +40,6 @@
 
 (def Task
   (realm->schema task-schema))
+
+(def app-db-schema
+  {:tasks [Task]})
