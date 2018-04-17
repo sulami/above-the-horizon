@@ -63,7 +63,7 @@
 (s/defn save-task
   "Save an existing task or create a new one."
   ^:always-validate
-  [task]
+  [task :- schema/Task]
   (->> (assoc task :uid (or (:uid task) (str (uuid/make-random))))
        (with-action insert "Task")))
 
