@@ -1,6 +1,7 @@
 (ns above-the-horizon.realm
-  (:require [above-the-horizon.schema :as s]
-            [cljs-uuid.core :as uuid]))
+  (:require [cljs-uuid.core :as uuid]
+            [schema.core :as s :include-macros true]
+            [above-the-horizon.schema :as schema]))
 
 (def realm (js/require "realm"))
 
@@ -27,7 +28,7 @@
 (defn action
   "Decorator to run a function in a Realm context, closing the DB afterwards."
   [func]
-  (let* [r (new realm s/complete-schema)
+  (let* [r (new realm schema/complete-schema)
          result (func r)]
     (.close r)
     result))
@@ -59,8 +60,9 @@
 ;; Specific
 ;;
 
-(defn save-task
+(s/defn save-task
   "Save an existing task or create a new one."
+  ^:always-validate
   [task]
   (->> (assoc task :uid (or (:uid task) (str (uuid/make-random))))
        (with-action insert "Task")))
