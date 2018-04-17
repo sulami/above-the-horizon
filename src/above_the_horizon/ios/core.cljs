@@ -32,18 +32,20 @@
     {:style (:text button-style)}
     display-text]])
 
-(s/defn ^:always-validate make-task-button
+(s/defn ^:always-validate make-task-cell
   [navigate
    task :- Task]
-  [view {:style {:flex-direction "row"} :key (:uid task)}
+  [view {:style style/task-cell-container-style :key (:uid task)}
    (make-button
     "O"
-    {:button {:margin-left 20 :padding 12} :text {:font-size 16}}
+    style/task-cell-checkbox-style
     #(dispatch [:complete-task (:uid task)]))
-   (make-button
-    (:name task)
-    style/task-button-style
-    #(navigate "NewTask" {:task task}))])
+   [touchable-highlight {:key (:uid task)
+                         :style style/task-cell-right-touch-style
+                         :on-press #(navigate "NewTask" {:task task})}
+    [view {:style style/task-cell-right-container-style}
+     [text {:style style/task-cell-title-style} (:name task)]
+     [text {:style style/task-cell-due-date-style} "due date"]]]])
 
 (defn today-view [props]
   (fn []
@@ -52,7 +54,7 @@
           tasks (subscribe [:get-tasks])]
       [safe-area-view {:style style/view-style}
        [scroll-view
-        (map (partial make-task-button navigate) @tasks)]
+        (map (partial make-task-cell navigate) @tasks)]
        [view {:style style/action-bar-style}
         (make-button "+" style/new-task-button-style #(navigate "NewTask"))]])))
 

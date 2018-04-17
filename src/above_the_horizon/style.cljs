@@ -19,10 +19,35 @@
    :justify-content "space-around"
    :width "100%"})
 
-(def task-button-style
-  {:button {:border-radius 5
-            :padding 12}
+(def task-cell-container-style
+  "The outer container for the task cell in a list."
+  {:align-items "center"
+   :flex-direction "row"
+   :padding 0})
+
+(def task-cell-checkbox-style
+  "The checkbox on the left of the task cell."
+  {:button {:padding-horizontal 24
+            :padding-vertical 12}
    :text {:font-size 16}})
+
+(def task-cell-right-container-style
+  "The right hand side of the task cell, containing the text."
+  {:align-items "stretch"
+   :flex 1
+   :padding 8})
+
+(def task-cell-right-touch-style
+  "The right hand touchable highlight in the task cell."
+  {:flex 1})
+
+(def task-cell-title-style
+  "The title of the task in the task cell."
+  {:font-size 16})
+
+(def task-cell-due-date-style
+  "The due date in the task cell."
+  {:font-size 12})
 
 (def new-task-button-style
   {:button {:align-self "flex-end"
