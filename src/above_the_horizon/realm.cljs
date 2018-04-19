@@ -64,7 +64,8 @@
   "Save an existing task or create a new one."
   ^:always-validate
   [task :- schema/Task]
-  (->> (assoc task :uid (or (:uid task) (str (uuid/make-random))))
+  (->> (or (:uid task) (str (uuid/make-random)))
+       (assoc task :uid)
        (with-action insert "Task")))
 
 (defn delete-task

@@ -45,7 +45,8 @@
                          :on-press #(navigate "NewTask" {:task task})}
     [view {:style style/task-cell-right-container-style}
      [text {:style style/task-cell-title-style} (:name task)]
-     [text {:style style/task-cell-due-date-style} "due date"]]]])
+     [text {:style style/task-cell-due-date-style}
+      (or "No due date" (:due-date task))]]]])
 
 (defn today-view [props]
   (fn []
