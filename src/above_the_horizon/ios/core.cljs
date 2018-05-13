@@ -2,6 +2,7 @@
   (:require [reagent.core :as r :refer [atom]]
             [re-frame.core :refer [subscribe dispatch dispatch-sync]]
             [cljs-react-navigation.reagent :refer [stack-navigator stack-screen]]
+            [cljs-time.core :as time]
             [schema.core :as s :include-macros true]
             [above-the-horizon.events]
             [above-the-horizon.realm :as realm]
@@ -11,6 +12,7 @@
 
 (def ReactNative (js/require "react-native"))
 (def app-registry (.-AppRegistry ReactNative))
+(def date-picker (r/adapt-react-class (.-DatePickerIOS ReactNative)))
 (def scroll-view (r/adapt-react-class (.-ScrollView ReactNative)))
 (def text (r/adapt-react-class (.-Text ReactNative)))
 (def text-input (r/adapt-react-class (.-TextInput ReactNative)))
@@ -59,6 +61,11 @@
        [view {:style style/action-bar-style}
         (make-button "+" style/new-task-button-style #(navigate "NewTask"))]])))
 
+;; FIXME No idea why this works but it doesn't when it's inside a `let*` below.
+;; This actually prevents us from setting it to the due date of an already
+;; existing task.
+(def due-date-value (r/atom (time/now)))
+
 (defn task-view [props]
   (fn []
     (let* [go-back (-> props :navigation :goBack)
@@ -76,12 +83,16 @@
          :enablesReturnKeyAutomatically true
          :autoFocus is-new-task
          :on-change-text #(reset! name-value %)}
-        task-name]
+        @name-value]
+       [date-picker
+        {:date @due-date-value
+         :on-date-change #(reset! due-date-value %)}]
        [view {:style style/action-bar-style}
         (make-button "Cancel" style/cancel-button-style #(go-back))
         (make-button "Save" style/save-button-style (fn []
                                                       (dispatch [:save-task {:uid task-uid
-                                                                             :name @name-value}])
+                                                                             :name @name-value
+                                                                             :due-date @due-date-value}])
                                                       (go-back)))]])))
 
 (def stack-router
