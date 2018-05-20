@@ -3,6 +3,7 @@
             [re-frame.core :refer [subscribe dispatch dispatch-sync]]
             [cljs-react-navigation.reagent :refer [stack-navigator stack-screen]]
             [cljs-time.core :as time]
+            [cljs-time.coerce :refer [to-date]]
             [cljs-time.format :as tformat]
             [schema.core :as s :include-macros true]
             [above-the-horizon.events]
@@ -70,7 +71,8 @@
          is-new-task (nil? task)
          task-uid (if is-new-task nil (:uid task))
          name-value (r/atom (if is-new-task "" (:name task)))
-         due-date-value (r/atom (or (:due-date task) (time/now)))]
+         due-date-value (r/atom (cljs-time.coerce/to-date
+                                 (or (:due-date task) (time/now))))]
     (fn []
       [safe-area-view {:style style/view-style}
        [text-input
@@ -88,8 +90,6 @@
        [view {:style style/action-bar-style}
         (make-button "Cancel" style/cancel-button-style #(go-back))
         (make-button "Save" style/save-button-style (fn []
-                                                      (prn (type @due-date-value))
-                                                      (prn (str "saving " @due-date-value))
                                                       (dispatch [:save-task {:uid task-uid
                                                                              :name @name-value
                                                                              :due-date @due-date-value}])
