@@ -1,6 +1,7 @@
 (ns above-the-horizon.realm
   (:require [cljs-uuid.core :as uuid]
             [schema.core :as s :include-macros true]
+            [cljs-time.coerce :refer [from-date]]
             [above-the-horizon.schema :as schema]))
 
 (def realm (js/require "realm"))
@@ -8,6 +9,12 @@
 ;;
 ;; Utils
 ;;
+
+(defn jsdate->cljdate
+  [x]
+  (if (instance? js/Date x)
+    (cljs-time.coerce/from-date x)
+    x))
 
 (defn jsx->clj
   "Convert JSX data to Clojure data."
@@ -19,11 +26,7 @@
                 (let [v (aget x k)]
                   (if (instance? realm.List v)
                     (map jsx->clj (array-seq v))
-                    v))]))))
-
-;;
-;; Abstract
-;;
+                    (jsdate->cljdate v)))]))))
 
 (defn action
   "Decorator to run a function in a Realm context, closing the DB afterwards."
@@ -43,7 +46,8 @@
   [r table]
   (some->> (.objects r table)
            array-seq
-           (mapv jsx->clj)))
+           (mapv jsx->clj)
+           (map jsdate->cljdate)))
 
 (defn insert
   "Insert a row into a table."

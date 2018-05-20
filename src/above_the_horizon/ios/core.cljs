@@ -3,6 +3,7 @@
             [re-frame.core :refer [subscribe dispatch dispatch-sync]]
             [cljs-react-navigation.reagent :refer [stack-navigator stack-screen]]
             [cljs-time.core :as time]
+            [cljs-time.format :as tformat]
             [schema.core :as s :include-macros true]
             [above-the-horizon.events]
             [above-the-horizon.realm :as realm]
@@ -48,7 +49,9 @@
     [view {:style style/task-cell-right-container-style}
      [text {:style style/task-cell-title-style} (:name task)]
      [text {:style style/task-cell-due-date-style}
-      (or "No due date" (:due-date task))]]]])
+      (if (:due-date task)
+        (tformat/unparse (tformat/formatters :mysql) (:due-date task))
+        "No due date")]]]])
 
 (defn today-view [props]
   (fn []
@@ -61,19 +64,14 @@
        [view {:style style/action-bar-style}
         (make-button "+" style/new-task-button-style #(navigate "NewTask"))]])))
 
-;; FIXME No idea why this works but it doesn't when it's inside a `let*` below.
-;; This actually prevents us from setting it to the due date of an already
-;; existing task.
-(def due-date-value (r/atom (time/now)))
-
 (defn task-view [props]
-  (fn []
-    (let* [go-back (-> props :navigation :goBack)
-           task (-> props :navigation :state :params :task)
-           is-new-task (nil? task)
-           task-uid (if is-new-task nil (:uid task))
-           task-name (if is-new-task "" (:name task))
-           name-value (r/atom task-name)]
+  (let* [go-back (-> props :navigation :goBack)
+         task (-> props :navigation :state :params :task)
+         is-new-task (nil? task)
+         task-uid (if is-new-task nil (:uid task))
+         name-value (r/atom (if is-new-task "" (:name task)))
+         due-date-value (r/atom (or (:due-date task) (time/now)))]
+    (fn []
       [safe-area-view {:style style/view-style}
        [text-input
         {:style style/textbox-style
@@ -90,6 +88,8 @@
        [view {:style style/action-bar-style}
         (make-button "Cancel" style/cancel-button-style #(go-back))
         (make-button "Save" style/save-button-style (fn []
+                                                      (prn (type @due-date-value))
+                                                      (prn (str "saving " @due-date-value))
                                                       (dispatch [:save-task {:uid task-uid
                                                                              :name @name-value
                                                                              :due-date @due-date-value}])
