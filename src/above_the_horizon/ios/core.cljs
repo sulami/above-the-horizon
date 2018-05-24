@@ -28,7 +28,8 @@
   "Trigger an alert with `message`"
   (.alert (.-Alert ReactNative) message))
 
-(defn make-button [display-text button-style action]
+(defn button-component
+  [display-text button-style action]
   [touchable-highlight {:style (:button button-style)
                         :on-press action
                         :key display-text}
@@ -36,23 +37,36 @@
     {:style (:text button-style)}
     display-text]])
 
-(s/defn ^:always-validate make-task-cell
+(s/defn ^:always-validate task-cell-component
   [navigate
    task :- Task]
   [view {:style style/task-cell-container-style :key (:uid task)}
-   (make-button
+   [button-component
     "O"
     style/task-cell-checkbox-style
-    #(dispatch [:complete-task (:uid task)]))
+    #(dispatch [:complete-task (:uid task)])]
    [touchable-highlight {:key (:uid task)
                          :style style/task-cell-right-touch-style
                          :on-press #(navigate "NewTask" {:task task})}
     [view {:style style/task-cell-right-container-style}
      [text {:style style/task-cell-title-style} (:name task)]
-     [text {:style style/task-cell-due-date-style}
+     [text {:style (if (and (-> task :due-date nil? not)
+                            (< (:due-date task) (time/now)))
+                     style/task-cell-due-date-overdue-style
+                     style/task-cell-due-date-style)}
       (if (:due-date task)
         (tformat/unparse (tformat/formatters :mysql) (:due-date task))
         "No due date")]]]])
+
+(defn format-time
+  [dt]
+  "Format a cljs datetime."
+  (tformat/unparse (tformat/formatters :mysql) dt))
+
+(defn format-js-time
+  [dt]
+  "Format a JS Date."
+  (-> dt cljs-time.coerce/from-date format-time))
 
 (defn today-view [props]
   (fn []
@@ -61,9 +75,34 @@
           tasks (subscribe [:get-tasks])]
       [safe-area-view {:style style/view-style}
        [scroll-view
-        (map (partial make-task-cell navigate) @tasks)]
+        (map (partial task-cell-component navigate) @tasks)]
        [view {:style style/action-bar-style}
-        (make-button "+" style/new-task-button-style #(navigate "NewTask"))]])))
+        [button-component "+" style/new-task-button-style #(navigate "NewTask")]]])))
+
+(defn date-picker-component
+  [date-picker-atom]
+  (let [today (cljs-time.coerce/to-date (time/now))
+        tomorrow (cljs-time.coerce/to-date (time/plus (time/now) (time/days 1)))]
+    [view
+     [text
+      {:style style/task-cell-title-style}
+      (str "Due date: " (format-js-time @date-picker-atom))]
+     [date-picker
+      {:date @date-picker-atom
+       :on-date-change #(reset! date-picker-atom %)}]
+     [view {:style {:flex 1 :justify-content "space-between" :height 30 :width "100%" :flex-direction "row"}}
+      [button-component
+       "Clear"
+       {:button {:width "33%" :height 30} :text {:font-size 15 :text-align "center"}}
+       #(reset! date-picker-atom nil)]  ;; FIXME this kills the picker, we need a seperate atom for that.
+      [button-component
+       "Today"
+       {:button {:width "33%" :height 30} :text {:font-size 15 :text-align "center"}}
+       #(reset! date-picker-atom today)]
+      [button-component
+       "Tomorrow"
+       {:button {:width "33%" :height 30} :text {:font-size 15 :text-align "center"}}
+       #(reset! date-picker-atom tomorrow)]]]))
 
 (defn task-view [props]
   (let* [go-back (-> props :navigation :goBack)
@@ -84,16 +123,14 @@
          :autoFocus is-new-task
          :on-change-text #(reset! name-value %)}
         @name-value]
-       [date-picker
-        {:date @due-date-value
-         :on-date-change #(reset! due-date-value %)}]
+       [date-picker-component due-date-value]
        [view {:style style/action-bar-style}
-        (make-button "Cancel" style/cancel-button-style #(go-back))
-        (make-button "Save" style/save-button-style (fn []
+        [button-component "Cancel" style/cancel-button-style #(go-back)]
+        [button-component "Save" style/save-button-style (fn []
                                                       (dispatch [:save-task {:uid task-uid
                                                                              :name @name-value
                                                                              :due-date @due-date-value}])
-                                                      (go-back)))]])))
+                                                      (go-back))]]])))
 
 (def stack-router
   {:Today {:screen (stack-screen today-view)}
