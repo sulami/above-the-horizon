@@ -49,6 +49,11 @@
   "The due date in the task cell."
   {:font-size 12})
 
+(def task-cell-due-date-overdue-style
+  "The due date in the task cell if it is overdue."
+  (into task-cell-due-date-style
+        {:color "tomato"}))
+
 (def new-task-button-style
   {:button {:align-self "flex-end"
             :background-color "#fff"
