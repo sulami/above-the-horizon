@@ -44,7 +44,8 @@
 (defn query
   "Get all rows in a table, converted to Clojure."
   [r table]
-  (some->> (.objects r table)
+  (some->> (-> (.objects r table)
+               (.sorted "due-date"))
            array-seq
            (mapv jsx->clj)
            (map jsdate->cljdate)))
@@ -54,7 +55,7 @@
   [r table data]
   (.write r #(.create r table (clj->js data) true)))
 
-(defn flush
+(defn flush-table
   "Empty a table."
   [r table]
   (.write r #(->> (.objects r table)
