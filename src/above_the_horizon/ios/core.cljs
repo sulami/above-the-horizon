@@ -51,7 +51,7 @@
     [view {:style style/task-cell-right-container-style}
      [text {:style style/task-cell-title-style} (:name task)]
      [text {:style (if (and (-> task :due-date nil? not)
-                            (< (:due-date task) (time/now)))
+                            (time/after? (time/now) (:due-date task)))
                      style/task-cell-due-date-overdue-style
                      style/task-cell-due-date-style)}
       (if (:due-date task)
