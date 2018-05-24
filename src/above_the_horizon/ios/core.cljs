@@ -82,7 +82,7 @@
 (defn date-picker-component
   [date-picker-atom]
   (let [today (cljs-time.coerce/to-date (time/now))
-        tomorrow (cljs-time.coerce/to-date (time/plus (time/now) (time/days 1)))]
+        tomorrow (cljs-time.coerce/to-date (-> 1 time/days time/from-now))]
     [view
      [text
       {:style style/task-cell-title-style}
