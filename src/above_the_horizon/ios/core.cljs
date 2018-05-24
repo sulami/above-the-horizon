@@ -28,8 +28,7 @@
           get-param (-> props :navigation :getParam)
           tasks (subscribe [:get-tasks])]
       [safe-area-view {:style style/view-style}
-       [scroll-view
-        (map (partial task-cell-component navigate) @tasks)]
+       [scroll-view (map (partial task-cell-component navigate) @tasks)]
        [view {:style style/action-bar-style}
         [button-component "+" style/new-task-button-style #(navigate "NewTask")]]])))
 
@@ -55,11 +54,14 @@
        [date-picker-component due-date-value]
        [view {:style style/action-bar-style}
         [button-component "Cancel" style/cancel-button-style #(go-back)]
-        [button-component "Save" style/save-button-style (fn []
-                                                      (dispatch [:save-task {:uid task-uid
-                                                                             :name @name-value
-                                                                             :due-date @due-date-value}])
-                                                      (go-back))]]])))
+        [button-component "Save"
+         style/save-button-style
+         (fn []
+           (dispatch
+            [:save-task {:uid task-uid
+                         :name @name-value
+                         :due-date @due-date-value}])
+           (go-back))]]])))
 
 (def stack-router
   {:Today {:screen (stack-screen today-view)}
