@@ -13,6 +13,7 @@
 (def touchable-opacity (r/adapt-react-class (.-TouchableOpacity ReactNative)))
 (def view (r/adapt-react-class (.-View ReactNative)))
 
+; TODO Cleanup and move these styles.
 (def title-view-style
   {:flex 0
    :flex-direction "row"
@@ -49,25 +50,39 @@
 (defn date-picker-component
   [date-atom]
   (r/with-let [picker-expanded (r/atom false)
-               date-picker-position (r/atom (or @date-atom (to-date (time/now))))]
-    (add-watch date-atom :date-sync
-               (fn [key atom old-state new-state]
-                 (if (nil? new-state)
-                   (do
-                     (reset! picker-expanded false)
-                     (reset! date-picker-position (to-date (time/now))))
-                  (reset! date-picker-position new-state))))
+               date-picker-position (r/atom (or @date-atom
+                                                (to-date (time/now))))]
+
+    ; Keep the two atoms in sync, more or less. Collapse the picker when
+    ; clearing the date.
+    (add-watch
+     date-atom
+     :date-sync
+     (fn [key atom old-state new-state]
+       (if (nil? new-state)
+         (do (reset! picker-expanded false)
+             (reset! date-picker-position (to-date (time/now))))
+         (reset! date-picker-position new-state))))
+
     (let [today (to-date (time/now))
           tomorrow (to-date (-> 1 time/days time/from-now))]
       [view
-       [touchable-opacity {:style title-view-style
-                           :on-press (fn []
-                                       (when (and (nil? @date-atom)
-                                                  (not @picker-expanded))
-                                         (reset! date-atom today))
-                                       (swap! picker-expanded not))}
+
+       ; This is the title row.
+       [touchable-opacity
+        {:style title-view-style
+         :on-press (fn []
+                     (when (and (nil? @date-atom)
+                                (not @picker-expanded))
+                       (reset! date-atom today))
+                     (swap! picker-expanded not))}
         [text {:style title-style} "Due date:"]
-        [text {:style title-style} (if (nil? @date-atom) "No due date" (format-js-time @date-atom))]]
+        [text {:style title-style}
+         (if (nil? @date-atom)
+           "No due date"
+           (format-js-time @date-atom))]]
+
+       ; This is the collapsable bottom section with the picker.
        [view {:style {:display (if @picker-expanded "flex" "none")}}
         [date-picker
          {:date @date-picker-position
