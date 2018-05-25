@@ -60,10 +60,7 @@
        (if (nil? new-state)
          (do (layout-animation.name.easeInEaseOut)
              (reset! picker-expanded false)
-             ; Prevent scrolling the picker while it's collapsing.
-             (js/setTimeout
-              #(reset! date-picker-position (to-date (time/now)))
-              300))
+             (reset! date-picker-position (to-date (time/now))))
          (reset! date-picker-position new-state))))
 
     (let [today (to-date (time/now))
