@@ -33,7 +33,7 @@
          (reset! date-picker-position new-state))))
 
     (let [today (to-date (time/now))
-          tomorrow (to-date (-> 1 time/days time/from-now))]
+          tomorrow (-> 1 time/days time/from-now to-date)]
       [view
 
        ; This is the title row.
