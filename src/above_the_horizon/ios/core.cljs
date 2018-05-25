@@ -41,16 +41,17 @@
          due-date-value (r/atom (-> task :due-date to-date))]
     (fn []
       [safe-area-view {:style style/view-style}
-       [text-input
-        {:style style/textbox-style
-         :maxLength 255
-         :placeholder "Task Name"
-         :returnKeyType "done"
-         :enablesReturnKeyAutomatically true
-         :autoFocus is-new-task
-         :on-change-text #(reset! name-value %)}
-        @name-value]
-       [date-picker-component due-date-value]
+       [view
+        [text-input
+         {:style style/textbox-style
+          :maxLength 255
+          :placeholder "Task Name"
+          :returnKeyType "done"
+          :enablesReturnKeyAutomatically true
+          :autoFocus is-new-task
+          :on-change-text #(reset! name-value %)}
+         @name-value]
+        [date-picker-component due-date-value]]
        [view {:style style/action-bar-style}
         [button-component "Cancel" style/cancel-button-style #(go-back)]
         [button-component "Save"

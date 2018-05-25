@@ -9,6 +9,7 @@
 (def ReactNative (js/require "react-native"))
 
 (def date-picker (r/adapt-react-class (.-DatePickerIOS ReactNative)))
+(def layout-animation (r/adapt-react-class (.-LayoutAnimation ReactNative)))
 (def text (r/adapt-react-class (.-Text ReactNative)))
 (def touchable-opacity (r/adapt-react-class (.-TouchableOpacity ReactNative)))
 (def view (r/adapt-react-class (.-View ReactNative)))
@@ -31,20 +32,14 @@
    :text-align "center"})
 
 (def view-style
-  {:flex 1
-   :justify-content "center"
-   :height 30
-   :width "100%"
+  {:justify-content "center"
    :flex-direction "row"
    :flex-wrap "wrap"})
 
-(def button-style
-  {:button {:width "33%"
-            :border-color "#eee"
-            :border-width 0.5
-            :height 40}
+(def base-button-style
+  {:button {:width "33.3%"
+            :border-color "#eee"}
    :text {:font-size 15
-          :line-height 40
           :text-align "center"}})
 
 (defn date-picker-component
@@ -60,8 +55,12 @@
      :date-sync
      (fn [key atom old-state new-state]
        (if (nil? new-state)
-         (do (reset! picker-expanded false)
-             (reset! date-picker-position (to-date (time/now))))
+         (do (layout-animation.name.easeInEaseOut)
+             (reset! picker-expanded false)
+             ; Prevent scrolling the picker while it's collapsing.
+             (js/setTimeout
+              #(reset! date-picker-position (to-date (time/now)))
+              300))
          (reset! date-picker-position new-state))))
 
     (let [today (to-date (time/now))
@@ -75,6 +74,7 @@
                      (when (and (nil? @date-atom)
                                 (not @picker-expanded))
                        (reset! date-atom today))
+                     (layout-animation.name.easeInEaseOut)
                      (swap! picker-expanded not))}
         [text {:style title-style} "Due date:"]
         [text {:style title-style}
@@ -83,14 +83,21 @@
            (format-js-time @date-atom))]]
 
        ; This is the collapsable bottom section with the picker.
-       [view {:style {:display (if @picker-expanded "flex" "none")}}
+       [view {:style (if @picker-expanded
+                       {:height "auto" :overflow "visible"}
+                       {:height 0 :overflow "hidden"})}
         [date-picker
          {:date @date-picker-position
           :on-date-change #(reset! date-atom %)}]
-        [view {:style view-style}
-         [button-component "Clear" button-style #(reset! date-atom nil)]
-         [button-component "Today" button-style #(reset! date-atom today)]
-         [button-component "Tomorrow" button-style #(reset! date-atom tomorrow)]
-         [button-component "+ 1 day" button-style #(reset! date-atom nil)]
-         [button-component "+ 1 week" button-style #(reset! date-atom today)]
-         [button-component "+ 1 month" button-style #(reset! date-atom tomorrow)]]]])))
+        (let [button-style (style/extend-button-style
+                            base-button-style
+                            {:button {:border-width (if @picker-expanded 0.5 0)
+                                      :height (if @picker-expanded 40 0)}
+                             :text {:line-height (if @picker-expanded 40)}})]
+          [view {:style (into view-style (if @picker-expanded {} {:height 0}))}
+           [button-component "Clear" button-style #(reset! date-atom nil)]
+           [button-component "Today" button-style #(reset! date-atom today)]
+           [button-component "Tomorrow" button-style #(reset! date-atom tomorrow)]
+           [button-component "+ 1 day" button-style #(reset! date-atom nil)]
+           [button-component "+ 1 week" button-style #(reset! date-atom today)]
+           [button-component "+ 1 month" button-style #(reset! date-atom tomorrow)]])]])))
