@@ -10,7 +10,7 @@
 (def ReactNative (js/require "react-native"))
 
 (def text (r/adapt-react-class (.-Text ReactNative)))
-(def touchable-highlight (r/adapt-react-class (.-TouchableOpacity ReactNative)))
+(def touchable-opacity (r/adapt-react-class (.-TouchableOpacity ReactNative)))
 (def view (r/adapt-react-class (.-View ReactNative)))
 
 (s/defn ^:always-validate task-cell-component
@@ -21,7 +21,7 @@
     "O"
     style/task-cell-checkbox-style
     #(dispatch [:complete-task (:uid task)])]
-   [touchable-highlight {:key (:uid task)
+   [touchable-opacity {:key (:uid task)
                          :style style/task-cell-right-touch-style
                          :on-press #(navigate "NewTask" {:task task})}
     [view {:style style/task-cell-right-container-style}

@@ -38,8 +38,7 @@
          is-new-task (nil? task)
          task-uid (if is-new-task nil (:uid task))
          name-value (r/atom (if is-new-task "" (:name task)))
-         due-date-value (r/atom (to-date
-                                 (or (:due-date task) (time/now))))]
+         due-date-value (r/atom (-> task :due-date to-date))]
     (fn []
       [safe-area-view {:style style/view-style}
        [text-input
