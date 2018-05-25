@@ -1,5 +1,11 @@
 (ns above-the-horizon.style)
 
+;; PROPS
+
+(def large-font-size 22)
+(def medium-font-size 16)
+(def small-font-size 12)
+
 ;; COLOURS
 
 (def background-colour "#fff")
@@ -45,7 +51,7 @@
   "The checkbox on the left of the task cell."
   {:button {:padding-horizontal 24
             :padding-vertical 12}
-   :text {:font-size 16}})
+   :text {:font-size medium-font-size}})
 
 (def task-cell-right-container-style
   "The right hand side of the task cell, containing the text."
@@ -59,11 +65,11 @@
 
 (def task-cell-title-style
   "The title of the task in the task cell."
-  {:font-size 16})
+  {:font-size medium-font-size})
 
 (def task-cell-due-date-style
   "The due date in the task cell."
-  {:font-size 12})
+  {:font-size small-font-size})
 
 (def task-cell-due-date-overdue-style
   "The due date in the task cell if it is overdue."
@@ -86,11 +92,9 @@
 
 (def textbox-style
   {:background-color background-colour
-   :border-color gray-accent-colour
-   :border-radius 10
-   :border-width 1
-   :margin 20
-   :padding 12})
+   :font-size large-font-size
+   :padding-horizontal 12
+   :padding-vertical 20})
 
 (def date-picker-title-bar-style
   {:flex 0
@@ -103,7 +107,7 @@
    :border-width 1})
 
 (def date-picker-title-style
-  {:font-size 16
+  {:font-size medium-font-size
    :height 40
    :line-height 40
    :text-align "center"})
@@ -118,13 +122,13 @@
             :border-width 0.5
             :height 40
             :width "33.3%"}
-   :text {:font-size 15
+   :text {:font-size medium-font-size
           :line-height 40
           :text-align "center"}})
 
 (def action-button-style
   {:button {:padding 20}
-   :text {:font-size 22}})
+   :text {:font-size large-font-size}})
 
 (def cancel-button-style
   (extend-button-style
