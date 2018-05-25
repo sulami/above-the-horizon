@@ -1,5 +1,6 @@
 (ns above-the-horizon.components.task-cell
   (:require [reagent.core :as r]
+            [re-frame.core :refer [dispatch]]
             [schema.core :as s :include-macros true]
             [cljs-time.core :as time]
             [above-the-horizon.components.button :refer [button-component]]
