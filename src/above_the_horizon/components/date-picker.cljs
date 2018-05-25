@@ -14,37 +14,6 @@
 (def touchable-opacity (r/adapt-react-class (.-TouchableOpacity ReactNative)))
 (def view (r/adapt-react-class (.-View ReactNative)))
 
-; TODO Cleanup and move these styles.
-(def title-view-style
-  {:flex 0
-   :flex-direction "row"
-   :justify-content "space-between"
-   :width "100%"
-   :height 40
-   :padding-horizontal 10
-   :border-color "#eee"
-   :border-width 1})
-
-(def title-style
-  {:font-size 16
-   :height 40
-   :line-height 40
-   :text-align "center"})
-
-(def view-style
-  {:justify-content "center"
-   :flex-direction "row"
-   :flex-wrap "wrap"})
-
-(def button-style
-  {:button {:border-color "#eee"
-            :border-width 0.5
-            :height 40
-            :width "33.3%"}
-   :text {:font-size 15
-          :line-height 40
-          :text-align "center"}})
-
 (defn date-picker-component
   [date-atom]
   (r/with-let [picker-expanded (r/atom false)
@@ -69,15 +38,15 @@
 
        ; This is the title row.
        [touchable-opacity
-        {:style title-view-style
+        {:style style/date-picker-title-bar-style
          :on-press (fn []
                      (when (and (nil? @date-atom)
                                 (not @picker-expanded))
                        (reset! date-atom today))
                      (layout-animation.name.easeInEaseOut)
                      (swap! picker-expanded not))}
-        [text {:style title-style} "Due date:"]
-        [text {:style title-style}
+        [text {:style style/date-picker-title-style} "Due date:"]
+        [text {:style style/date-picker-title-style}
          (if (nil? @date-atom)
            "No due date"
            (format-js-time @date-atom))]]
@@ -88,10 +57,10 @@
         [date-picker
          {:date @date-picker-position
           :on-date-change #(reset! date-atom %)}]
-        [view {:style view-style}
-         [button-component "Clear" button-style #(reset! date-atom nil)]
-         [button-component "Today" button-style #(reset! date-atom today)]
-         [button-component "Tomorrow" button-style #(reset! date-atom tomorrow)]
-         [button-component "+ 1 day" button-style #(reset! date-atom nil)]
-         [button-component "+ 1 week" button-style #(reset! date-atom today)]
-         [button-component "+ 1 month" button-style #(reset! date-atom tomorrow)]]]])))
+        [view {:style style/date-picker-collapsible-view-style}
+         [button-component "Clear" style/date-picker-button-style #(reset! date-atom nil)]
+         [button-component "Today" style/date-picker-button-style #(reset! date-atom today)]
+         [button-component "Tomorrow" style/date-picker-button-style #(reset! date-atom tomorrow)]
+         [button-component "+ 1 day" style/date-picker-button-style #(reset! date-atom nil)]
+         [button-component "+ 1 week" style/date-picker-button-style #(reset! date-atom today)]
+         [button-component "+ 1 month" style/date-picker-button-style #(reset! date-atom tomorrow)]]]])))
