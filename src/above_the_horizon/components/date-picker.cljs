@@ -36,10 +36,13 @@
    :flex-direction "row"
    :flex-wrap "wrap"})
 
-(def base-button-style
-  {:button {:width "33.3%"
-            :border-color "#eee"}
+(def button-style
+  {:button {:border-color "#eee"
+            :border-width 0.5
+            :height 40
+            :width "33.3%"}
    :text {:font-size 15
+          :line-height 40
           :text-align "center"}})
 
 (defn date-picker-component
@@ -83,21 +86,15 @@
            (format-js-time @date-atom))]]
 
        ; This is the collapsable bottom section with the picker.
-       [view {:style (if @picker-expanded
-                       {:height "auto" :overflow "visible"}
-                       {:height 0 :overflow "hidden"})}
+       [view {:style {:overflow "hidden"
+                      :height (if @picker-expanded "auto" 0)}}
         [date-picker
          {:date @date-picker-position
           :on-date-change #(reset! date-atom %)}]
-        (let [button-style (style/extend-button-style
-                            base-button-style
-                            {:button {:border-width (if @picker-expanded 0.5 0)
-                                      :height (if @picker-expanded 40 0)}
-                             :text {:line-height (if @picker-expanded 40)}})]
-          [view {:style (into view-style (if @picker-expanded {} {:height 0}))}
-           [button-component "Clear" button-style #(reset! date-atom nil)]
-           [button-component "Today" button-style #(reset! date-atom today)]
-           [button-component "Tomorrow" button-style #(reset! date-atom tomorrow)]
-           [button-component "+ 1 day" button-style #(reset! date-atom nil)]
-           [button-component "+ 1 week" button-style #(reset! date-atom today)]
-           [button-component "+ 1 month" button-style #(reset! date-atom tomorrow)]])]])))
+        [view {:style view-style}
+         [button-component "Clear" button-style #(reset! date-atom nil)]
+         [button-component "Today" button-style #(reset! date-atom today)]
+         [button-component "Tomorrow" button-style #(reset! date-atom tomorrow)]
+         [button-component "+ 1 day" button-style #(reset! date-atom nil)]
+         [button-component "+ 1 week" button-style #(reset! date-atom today)]
+         [button-component "+ 1 month" button-style #(reset! date-atom tomorrow)]]]])))
