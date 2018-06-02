@@ -1,12 +1,14 @@
-ios
-android
+./ios
+./android
 
-package.json
-package-lock.json
+./package.json
+./package-lock.json
 
-figwheel-bridge.js
-__tests__
+./figwheel-bridge.js
+./__tests__
 
-src/cljsjs
-src/reagent
-env
+./src/cljsjs
+./src/reagent
+./env
+
+./checkouts

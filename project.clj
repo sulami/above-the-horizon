@@ -6,7 +6,7 @@
             :dependencies [[org.clojure/clojure "1.9.0"]
                            [org.clojure/clojurescript "1.9.946"]
                            [reagent "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]
-                           [cljs-react-navigation "0.1.1"]
+                           [cljs-react-navigation "0.1.3"]
                            [re-frame "0.10.4"]
                            [prismatic/schema "1.1.7"]
                            [cljs-uuid "0.0.4"]
