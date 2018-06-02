@@ -7,6 +7,7 @@
             [above-the-horizon.components.button :refer [button-component]]
             [above-the-horizon.components.date-picker :refer [date-picker-component]]
             [above-the-horizon.components.task-cell :refer [task-cell-component]]
+            [above-the-horizon.components.task-input :refer [task-input-component]]
             [above-the-horizon.events]
             [above-the-horizon.realm :as realm]
             [above-the-horizon.style :as style]
@@ -16,7 +17,6 @@
 
 (def app-registry (.-AppRegistry ReactNative))
 (def scroll-view (r/adapt-react-class (.-ScrollView ReactNative)))
-(def text-input (r/adapt-react-class (.-TextInput ReactNative)))
 (def view (r/adapt-react-class (.-View ReactNative)))
 
 (def ReactNaviagtion (js/require "react-navigation"))
@@ -42,15 +42,7 @@
     (fn []
       [safe-area-view {:style style/view-style}
        [view
-        [text-input
-         {:style style/textbox-style
-          :maxLength 255
-          :placeholder "Task Name"
-          :returnKeyType "done"
-          :enablesReturnKeyAutomatically true
-          :autoFocus is-new-task
-          :on-change-text #(reset! name-value %)}
-         @name-value]
+        [task-input-component name-value]
         [date-picker-component due-date-value]]
        [view {:style style/action-bar-style}
         [button-component "Cancel" style/cancel-button-style #(go-back)]
