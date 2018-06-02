@@ -4,10 +4,10 @@
             [cljs-react-navigation.reagent :refer [stack-navigator stack-screen]]
             [cljs-time.core :as time]
             [cljs-time.coerce :refer [to-date]]
-            [above-the-horizon.components.button :refer [button-component]]
-            [above-the-horizon.components.date-picker :refer [date-picker-component]]
-            [above-the-horizon.components.task-cell :refer [task-cell-component]]
-            [above-the-horizon.components.task-input :refer [task-input-component]]
+            [above-the-horizon.components.button :refer [button]]
+            [above-the-horizon.components.date-picker :refer [date-picker]]
+            [above-the-horizon.components.task-cell :refer [task-cell]]
+            [above-the-horizon.components.task-input :refer [task-input]]
             [above-the-horizon.events]
             [above-the-horizon.realm :as realm]
             [above-the-horizon.style :as style]
@@ -28,9 +28,9 @@
           get-param (-> props :navigation :getParam)
           tasks (subscribe [:get-tasks])]
       [safe-area-view {:style style/view-style}
-       [scroll-view (map (partial task-cell-component navigate) @tasks)]
+       [scroll-view (map (partial task-cell navigate) @tasks)]
        [view {:style style/action-bar-style}
-        [button-component "+" style/new-task-button-style #(navigate "NewTask")]]])))
+        [button "+" style/new-task-button-style #(navigate "NewTask")]]])))
 
 (defn task-view [props]
   (let* [go-back (-> props :navigation :goBack)
@@ -42,11 +42,11 @@
     (fn []
       [safe-area-view {:style style/view-style}
        [view
-        [task-input-component name-value]
-        [date-picker-component due-date-value]]
+        [task-input name-value]
+        [date-picker due-date-value]]
        [view {:style style/action-bar-style}
-        [button-component "Cancel" style/cancel-button-style #(go-back)]
-        [button-component "Save"
+        [button "Cancel" style/cancel-button-style #(go-back)]
+        [button "Save"
          style/save-button-style
          (fn []
            (dispatch

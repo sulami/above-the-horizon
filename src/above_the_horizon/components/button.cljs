@@ -6,7 +6,7 @@
 (def text (r/adapt-react-class (.-Text ReactNative)))
 (def touchable-highlight (r/adapt-react-class (.-TouchableOpacity ReactNative)))
 
-(defn button-component
+(defn button
   [display-text button-style action]
   [touchable-highlight {:style (:button button-style)
                         :on-press action

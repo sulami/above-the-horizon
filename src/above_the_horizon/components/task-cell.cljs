@@ -3,7 +3,7 @@
             [re-frame.core :refer [dispatch]]
             [schema.core :as s :include-macros true]
             [cljs-time.core :as time]
-            [above-the-horizon.components.button :refer [button-component]]
+            [above-the-horizon.components.button :refer [button]]
             [above-the-horizon.schema :refer [Task]]
             [above-the-horizon.style :as style]
             [above-the-horizon.time :refer [format-time]]))
@@ -14,11 +14,11 @@
 (def touchable-opacity (r/adapt-react-class (.-TouchableOpacity ReactNative)))
 (def view (r/adapt-react-class (.-View ReactNative)))
 
-(s/defn ^:always-validate task-cell-component
+(s/defn ^:always-validate task-cell
   [navigate
    task :- Task]
   [view {:style style/task-cell-container-style :key (:uid task)}
-   [button-component
+   [button
     "O"
     style/task-cell-checkbox-style
     #(dispatch [:complete-task (:uid task)])]

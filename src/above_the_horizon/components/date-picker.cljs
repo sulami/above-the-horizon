@@ -2,19 +2,19 @@
   (:require [reagent.core :as r]
             [cljs-time.core :as time]
             [cljs-time.coerce :refer [to-date]]
-            [above-the-horizon.components.button :refer [button-component]]
+            [above-the-horizon.components.button :refer [button]]
             [above-the-horizon.style :as style]
             [above-the-horizon.time :refer [format-js-time on-js-time]]))
 
 (def ReactNative (js/require "react-native"))
 
-(def date-picker (r/adapt-react-class (.-DatePickerIOS ReactNative)))
+(def date-picker-ios (r/adapt-react-class (.-DatePickerIOS ReactNative)))
 (def layout-animation (r/adapt-react-class (.-LayoutAnimation ReactNative)))
 (def text (r/adapt-react-class (.-Text ReactNative)))
 (def touchable-opacity (r/adapt-react-class (.-TouchableOpacity ReactNative)))
 (def view (r/adapt-react-class (.-View ReactNative)))
 
-(defn date-picker-component
+(defn date-picker
   [date-atom]
   (r/with-let [picker-expanded (r/atom false)
                date-picker-position (r/atom (or @date-atom
@@ -54,22 +54,22 @@
        ; This is the collapsable bottom section with the picker.
        [view {:style {:overflow "hidden"
                       :height (if @picker-expanded "auto" 0)}}
-        [date-picker
+        [date-picker-ios
          {:date @date-picker-position
           :on-date-change #(reset! date-atom %)}]
         [view {:style style/date-picker-collapsible-view-style}
-         [button-component "Clear" style/date-picker-button-style #(reset! date-atom nil)]
-         [button-component "Today" style/date-picker-button-style #(reset! date-atom today)]
-         [button-component "Tomorrow" style/date-picker-button-style #(reset! date-atom tomorrow)]
-         [button-component "+ 1 day" style/date-picker-button-style #(swap! date-atom (fn [old]
+         [button "Clear" style/date-picker-button-style #(reset! date-atom nil)]
+         [button "Today" style/date-picker-button-style #(reset! date-atom today)]
+         [button "Tomorrow" style/date-picker-button-style #(reset! date-atom tomorrow)]
+         [button "+ 1 day" style/date-picker-button-style #(swap! date-atom (fn [old]
                                                                                         (on-js-time (fn [dt]
                                                                                                       (time/plus dt (time/days 1)))
                                                                                                     old)))]
-         [button-component "+ 1 week" style/date-picker-button-style #(swap! date-atom (fn [old]
+         [button "+ 1 week" style/date-picker-button-style #(swap! date-atom (fn [old]
                                                                                          (on-js-time (fn [dt]
                                                                                                        (time/plus dt (time/weeks 1)))
                                                                                                      old)))]
-         [button-component "+ 1 month" style/date-picker-button-style #(swap! date-atom (fn [old]
+         [button "+ 1 month" style/date-picker-button-style #(swap! date-atom (fn [old]
                                                                                           (on-js-time (fn [dt]
                                                                                                         (time/plus dt (time/months 1)))
                                                                                                       old)))]]]])))

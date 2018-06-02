@@ -6,7 +6,7 @@
 
 (def text-input (r/adapt-react-class (.-TextInput ReactNative)))
 
-(defn task-input-component
+(defn task-input
   [name-atom]
   [text-input
    {:style style/textbox-style
