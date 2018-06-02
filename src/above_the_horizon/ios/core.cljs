@@ -41,8 +41,8 @@
          due-date-value (r/atom (-> task :due-date to-date))]
     (fn []
       [safe-area-view {:style style/view-style}
-       [view
-        [task-input name-value]
+       [view {:style style/task-view-container-style}
+        [task-input name-value is-new-task]
         [date-picker due-date-value]]
        [view {:style style/action-bar-style}
         [button "Cancel" style/cancel-button-style #(go-back)]

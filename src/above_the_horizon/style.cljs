@@ -94,12 +94,35 @@
 
 ;; Task view
 
-(def textbox-style
+(def task-view-container-style
+  {:flex 1
+   :flex-direction "column"
+   :justify-content "flex-start"})
+
+(def textbox-container-style
+  {:align-items "stretch"
+   :flex 0
+   :flex-direction "row"
+   :height (+ 40 large-font-size)
+   :justify-content "space-between"})
+
+(def task-title-textbox-style
   {:background-color background-colour
    :color foreground-colour
+   :flex 1
    :font-size large-font-size
    :padding-horizontal 12
    :padding-vertical 20})
+
+(def textbox-empty-button-style
+  {:button {:margin-horizontal 20
+            :margin-vertical 20
+            :height large-font-size
+            :width large-font-size}
+   :text {:color gray-accent-colour
+          :font-size large-font-size
+          :line-height large-font-size
+          :text-align "center"}})
 
 (def date-picker-title-bar-style
   {:flex 0
