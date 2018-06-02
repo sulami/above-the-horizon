@@ -4,7 +4,7 @@
             [cljs-time.coerce :refer [to-date]]
             [above-the-horizon.components.button :refer [button-component]]
             [above-the-horizon.style :as style]
-            [above-the-horizon.time :refer [format-js-time]]))
+            [above-the-horizon.time :refer [format-js-time on-js-time]]))
 
 (def ReactNative (js/require "react-native"))
 
@@ -61,6 +61,15 @@
          [button-component "Clear" style/date-picker-button-style #(reset! date-atom nil)]
          [button-component "Today" style/date-picker-button-style #(reset! date-atom today)]
          [button-component "Tomorrow" style/date-picker-button-style #(reset! date-atom tomorrow)]
-         [button-component "+ 1 day" style/date-picker-button-style #(reset! date-atom nil)]
-         [button-component "+ 1 week" style/date-picker-button-style #(reset! date-atom today)]
-         [button-component "+ 1 month" style/date-picker-button-style #(reset! date-atom tomorrow)]]]])))
+         [button-component "+ 1 day" style/date-picker-button-style #(swap! date-atom (fn [old]
+                                                                                        (on-js-time (fn [dt]
+                                                                                                      (time/plus dt (time/days 1)))
+                                                                                                    old)))]
+         [button-component "+ 1 week" style/date-picker-button-style #(swap! date-atom (fn [old]
+                                                                                         (on-js-time (fn [dt]
+                                                                                                       (time/plus dt (time/weeks 1)))
+                                                                                                     old)))]
+         [button-component "+ 1 month" style/date-picker-button-style #(swap! date-atom (fn [old]
+                                                                                          (on-js-time (fn [dt]
+                                                                                                        (time/plus dt (time/months 1)))
+                                                                                                      old)))]]]])))
