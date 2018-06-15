@@ -4,10 +4,10 @@
             :license {:name "Eclipse Public License"
                       :url  "http://www.eclipse.org/legal/epl-v10.html"}
             :dependencies [[org.clojure/clojure "1.9.0"]
-                           [org.clojure/clojurescript "1.9.946"]
-                           [reagent "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]
+                           [org.clojure/clojurescript "1.10.238"]
+                           [reagent "0.8.1" :exclusions [cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]
                            [cljs-react-navigation "0.1.3"]
-                           [re-frame "0.10.4"]
+                           [re-frame "0.10.5"]
                            [prismatic/schema "1.1.7"]
                            [cljs-uuid "0.0.4"]
                            [com.andrewmcveigh/cljs-time "0.5.2"]]
@@ -28,16 +28,18 @@
                                                      {:id           "ios"
                                                       :source-paths ["src" "env/dev"]
                                                       :figwheel     true
-                                                      :compiler     {:output-to     "target/ios/not-used.js"
+                                                      :compiler     {:output-to     "target/ios/index.js"
                                                                      :main          "env.ios.main"
                                                                      :output-dir    "target/ios"
+                                                                     :target        :nodejs
                                                                      :optimizations :none}}
                                                      {:id           "android"
                                                       :source-paths ["src" "env/dev"]
                                                       :figwheel     true
-                                                      :compiler     {:output-to     "target/android/not-used.js"
+                                                      :compiler     {:output-to     "target/android/index.js"
                                                                      :main          "env.android.main"
                                                                      :output-dir    "target/android"
+                                                                     :target        :nodejs
                                                                      :optimizations :none}}
 #_($DEV_PROFILES$)]}
                              :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}
@@ -50,6 +52,7 @@
                                                                    :static-fns    true
                                                                    :optimize-constants true
                                                                    :optimizations :simple
+                                                                   :target        :nodejs
                                                                    :closure-defines {"goog.DEBUG" false}}}
                                                    {:id           "android"
                                                     :source-paths ["src" "env/prod"]
@@ -59,6 +62,7 @@
                                                                    :static-fns    true
                                                                    :optimize-constants true
                                                                    :optimizations :simple
+                                                                   :target        :nodejs
                                                                    :closure-defines {"goog.DEBUG" false}}}
 #_($PROD_PROFILES$)]}}
                        :advanced {:dependencies [[react-native-externs "0.1.0"]]
@@ -71,6 +75,7 @@
                                                                    :static-fns    true
                                                                    :optimize-constants true
                                                                    :optimizations :advanced
+                                                                   :target        :nodejs
                                                                    :closure-defines {"goog.DEBUG" false}}}
                                                    {:id           "android"
                                                     :source-paths ["src" "env/prod"]
@@ -80,5 +85,6 @@
                                                                    :static-fns    true
                                                                    :optimize-constants true
                                                                    :optimizations :advanced
+                                                                   :target        :nodejs
                                                                    :closure-defines {"goog.DEBUG" false}}}
 #_($ADVANCED_PROFILES$)]}}})
