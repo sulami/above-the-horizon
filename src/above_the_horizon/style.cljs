@@ -10,8 +10,8 @@
 
 (def foreground-colour "#000")
 (def background-colour "#fff")
-(def cancel-colour "#c66")
-(def save-colour "#6c6")
+(def cancel-colour "#d88")
+(def save-colour "#8d8")
 (def gray-accent-colour "#ddd")
 
 ;; UTILITY
@@ -157,9 +157,9 @@
           :text-align "center"}})
 
 (def action-button-style
-  {:button {:padding 20}
+  {:button {:padding 16}
    :text {:color foreground-colour
-          :font-size large-font-size}})
+          :font-size medium-font-size}})
 
 (def cancel-button-style
   (extend-button-style
