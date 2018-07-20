@@ -1,11 +1,12 @@
 (ns above-the-horizon.time
   (:require [cljs-time.coerce :refer [from-date to-date]]
-            [cljs-time.format :refer [formatters unparse]]))
+            [cljs-time.format :refer [formatters unparse]]
+            [clojure.contrib.humanize :as humanize]))
 
 (defn format-time
   [dt]
   "Format a cljs datetime."
-  (unparse (formatters :mysql) dt))
+  (humanize/datetime dt))
 
 (defn format-js-time
   [dt]

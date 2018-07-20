@@ -33,4 +33,4 @@
                      style/task-cell-due-date-style)}
       (if (:due-date task)
         (format-time (:due-date task))
-        "No due date")]]]])
+        "")]]]])
