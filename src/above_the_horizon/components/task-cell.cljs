@@ -19,7 +19,7 @@
    task :- Task]
   [view {:style style/task-cell-container-style :key (:uid task)}
    [button
-    "O"
+    "□"
     style/task-cell-checkbox-style
     #(dispatch [:complete-task (:uid task)])]
    [touchable-opacity {:key (:uid task)
@@ -27,10 +27,15 @@
                          :on-press #(navigate "NewTask" {:task task})}
     [view {:style style/task-cell-right-container-style}
      [text {:style style/task-cell-title-style} (:name task)]
-     [text {:style (if (and (-> task :due-date nil? not)
-                            (time/after? (time/now) (:due-date task)))
+     [text {:style (cond
+                     (-> task :due-date nil?)
+                     style/task-cell-due-date-none-style
+
+                     (time/after? (time/now) (:due-date task))
                      style/task-cell-due-date-overdue-style
+
+                     :else
                      style/task-cell-due-date-style)}
       (if (:due-date task)
         (format-time (:due-date task))
-        "")]]]])
+        "No due date")]]]])

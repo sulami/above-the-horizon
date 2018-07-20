@@ -10,6 +10,7 @@
 
 (def foreground-colour "#000")
 (def background-colour "#fff")
+(def faded-colour "#aaa")
 (def cancel-colour "#d88")
 (def save-colour "#8d8")
 (def gray-accent-colour "#ddd")
@@ -55,7 +56,7 @@
 
 (def task-cell-checkbox-style
   "The checkbox on the left of the task cell."
-  {:button {:padding-horizontal 24
+  {:button {:padding-horizontal 12
             :padding-vertical 12}
    :text {:color foreground-colour
           :font-size medium-font-size}})
@@ -64,6 +65,7 @@
   "The right hand side of the task cell, containing the text."
   {:align-items "stretch"
    :flex 1
+   :padding-left 0
    :padding 8})
 
 (def task-cell-right-touch-style
@@ -79,6 +81,11 @@
   "The due date in the task cell."
   {:color foreground-colour
    :font-size small-font-size})
+
+(def task-cell-due-date-none-style
+  "The due date in the task cell if it is overdue."
+  (into task-cell-due-date-style
+        {:color faded-colour}))
 
 (def task-cell-due-date-overdue-style
   "The due date in the task cell if it is overdue."
