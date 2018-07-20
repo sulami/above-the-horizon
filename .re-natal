@@ -6,9 +6,10 @@
     "prod": "env/prod"
   },
   "modules": [
+    "react",
     "react-navigation",
-    "realm",
-    "react-navigation-tabs"
+    "react-navigation-tabs",
+    "realm"
   ],
   "imageDirs": [
     "images"

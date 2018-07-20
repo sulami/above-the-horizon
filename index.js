@@ -1,1 +1,2 @@
-index.ios.js
+var modules={'react-native': require('react-native'), 'react': require('react'), 'create-react-class': require('create-react-class')};modules['react']=require('react');modules['react-navigation']=require('react-navigation');modules['react-navigation-tabs']=require('react-navigation-tabs');modules['realm']=require('realm');modules['./images/cljs.png']=require('./images/cljs.png');modules['react-native']=require('react-native');modules['react-navigation']=require('react-navigation');modules['./images/cljs.png']=require('./images/cljs.png');
+require('figwheel-bridge').withModules(modules).start('AboveTheHorizon','ios','localhost');
