@@ -30,7 +30,8 @@
       [safe-area-view {:style style/view-style}
        [scroll-view (map (partial task-cell navigate) @tasks)]
        [view {:style style/action-bar-style}
-        [button "+" style/new-task-button-style #(navigate "NewTask")]]])))
+        [button "" {} #()]  ;; Push the new task button over
+        [button "New Task" style/new-task-button-style #(navigate "NewTask")]]])))
 
 (defn task-view [props]
   (let* [go-back (-> props :navigation :goBack)

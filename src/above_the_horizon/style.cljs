@@ -37,8 +37,13 @@
   {:border-color gray-accent-colour
    :border-top-width 1
    :flex-direction "row"
-   :justify-content "space-around"
+   :justify-content "space-between"
    :width "100%"})
+
+(def action-button-style
+  {:button {:padding 16}
+   :text {:color foreground-colour
+          :font-size medium-font-size}})
 
 ;; Task list
 
@@ -81,16 +86,9 @@
         {:color "tomato"}))
 
 (def new-task-button-style
-  {:button {:align-self "flex-end"
-            :background-color background-colour
-            :border-color gray-accent-colour
-            :height 50
-            :margin-right 30
-            :width 50}
-   :text {:color gray-accent-colour
-          :font-size 40
-          :line-height 44
-          :text-align "center"}})
+  (extend-button-style
+   action-button-style
+   {}))
 
 ;; Task view
 
@@ -155,11 +153,6 @@
           :font-size medium-font-size
           :line-height 40
           :text-align "center"}})
-
-(def action-button-style
-  {:button {:padding 16}
-   :text {:color foreground-colour
-          :font-size medium-font-size}})
 
 (def cancel-button-style
   (extend-button-style
