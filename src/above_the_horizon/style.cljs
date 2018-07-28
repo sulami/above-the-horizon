@@ -92,11 +92,6 @@
   (into task-cell-due-date-style
         {:color "tomato"}))
 
-(def new-task-button-style
-  (extend-button-style
-   action-button-style
-   {}))
-
 ;; Task view
 
 (def task-view-container-style
@@ -170,3 +165,10 @@
   (extend-button-style
    action-button-style
    {:text {:color save-colour}}))
+
+;; Menu
+
+(def menu-button-style
+  {:button {:padding 16}
+   :text {:color foreground-colour
+          :font-size large-font-size}})

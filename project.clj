@@ -5,7 +5,11 @@
                       :url  "http://www.eclipse.org/legal/epl-v10.html"}
             :dependencies [[org.clojure/clojure "1.9.0"]
                            [org.clojure/clojurescript "1.10.238"]
-                           [reagent "0.8.1" :exclusions [cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]
+                           [reagent "0.8.1"
+                            :exclusions [cljsjs/react
+                                         cljsjs/react-dom
+                                         cljsjs/react-dom-server
+                                         cljsjs/create-react-class]]
                            [cljs-react-navigation "0.2.0"]
                            [re-frame "0.10.5"]
                            [prismatic/schema "1.1.7"]
@@ -14,7 +18,11 @@
                            [clojure-humanize "0.2.2"]]
             :plugins [[lein-cljsbuild "1.1.4"]
                       [lein-figwheel "0.5.14"]]
-            :clean-targets ["target/" "index.js" "index.ios.js" "index.android.js" #_($PLATFORM_CLEAN$)]
+            :clean-targets ["target/"
+                            "index.js"
+                            "index.ios.js"
+                            "index.android.js"
+                            #_($PLATFORM_CLEAN$)]
             :aliases {"prod-build" ^{:doc "Recompile code with prod profile."}
                                    ["do" "clean"
                                     ["with-profile" "prod" "cljsbuild" "once"]]

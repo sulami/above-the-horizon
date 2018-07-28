@@ -16,6 +16,7 @@
 (def ReactNative (js/require "react-native"))
 
 (def app-registry (.-AppRegistry ReactNative))
+(def flat-list (r/adapt-react-class (.-FlatList ReactNative)))
 (def scroll-view (r/adapt-react-class (.-ScrollView ReactNative)))
 (def view (r/adapt-react-class (.-View ReactNative)))
 
@@ -23,15 +24,17 @@
 (def safe-area-view (r/adapt-react-class (.-SafeAreaView ReactNaviagtion)))
 
 (defn today-view [props]
-  (fn []
-    (let [navigate (-> props :navigation :navigate)
-          get-param (-> props :navigation :getParam)
-          tasks (subscribe [:get-tasks])]
+  (let [navigate (-> props :navigation :navigate)
+        get-param (-> props :navigation :getParam)
+        tasks (subscribe [:get-tasks])]
+    (fn []
       [safe-area-view {:style style/view-style}
        [scroll-view (map (partial task-cell navigate) @tasks)]
        [view {:style style/action-bar-style}
-        [button "" {} #()]  ;; Push the new task button over
-        [button "New Task" style/new-task-button-style #(navigate "NewTask")]]])))
+        [button "Menu" style/action-button-style
+         #(navigate "Menu")]
+        [button "New Task" style/action-button-style
+         #(navigate "NewTask")]]])))
 
 (defn task-view [props]
   (let* [go-back (-> props :navigation :goBack)
@@ -56,15 +59,38 @@
                          :due-date @due-date-value}])
            (go-back))]]])))
 
-(def stack-router
-  {:Today {:screen (stack-screen today-view)}
-   :NewTask {:screen (stack-screen task-view)}})
+(defn menu-view [props]
+  (let [navigate (-> props :navigation :navigate)]
+    (fn []
+      [safe-area-view {:style style/view-style}
+       [flat-list {:data [{:key "today" :label "Today" :target "Today"}
+                          {:key "all" :label "All Tasks" :target "AllTasks"}
+                          {:key "settings" :label "Settings" :target "Settings"}]
+                   :render-item (fn [item]
+                                  (let* [clj-item (-> item js->clj (get "item"))
+                                         label (-> clj-item (get "label"))
+                                         target (-> clj-item (get "target"))]
+                                    (r/as-element
+                                     [button
+                                      label
+                                      style/menu-button-style
+                                      #(navigate target)])))}]])))
 
-(def stack-nav
-  (stack-navigator stack-router {:headerMode "none"}))
+(def slide-nav
+  (stack-navigator
+   {:Today {:screen (stack-screen today-view)}
+    :NewTask {:screen (stack-screen task-view)}}
+   {:headerMode "none"}))
+
+(def all-nav
+  (stack-navigator
+   {:Slide {:screen slide-nav}
+    :Menu {:screen (stack-screen menu-view)}}
+   {:headerMode "none"
+    :mode "modal"}))
 
 (defn app-root []
-  [:> stack-nav {}])
+  [:> all-nav {}])
 
 (defn init []
   (dispatch-sync [:initialize-db])
